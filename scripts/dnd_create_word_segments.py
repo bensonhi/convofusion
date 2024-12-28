@@ -7,7 +7,7 @@ from tqdm import tqdm
 
 # from multiprocessing import Pool
 
-model = whisper.load_model("medium.en", download_root='/CT/mmughal/work/GestureSynth/whisper_ASR/model_cache/')
+model = whisper.load_model("medium.en")
 
 def transcribe(audio_path):
     audio_array, sr = librosa.load(audio_path, sr=16000)

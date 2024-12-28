@@ -131,8 +131,8 @@ def process_session(session_path, output_folder):
             "joints_24_02_23": 0,
         }
 
-    max_audio_len = int(((128 * 6)/25) * 1000) # 128 frames at 25 fps
-    max_motion_len = 128 * 6# 128 frames at 25 fps
+    max_audio_len = int(((128)/25) * 1000) # 128 frames at 25 fps
+    max_motion_len = 128 # 128 frames at 25 fps
 
     # make session output folder
     session_name = os.path.basename(session_path)
