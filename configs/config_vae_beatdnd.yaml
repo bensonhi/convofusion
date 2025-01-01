@@ -4,6 +4,7 @@ ACCELERATOR: 'gpu' # Devices optioncal: “cpu”, “gpu”, “tpu”, “ipu�
 DEVICE: [0] # Index of gpus eg. [0] or [0,1,2,3]
 
 # Training configuration
+# todo check weg_type
 TRAIN:
   #---------------------------------
   STAGE: vae # stage "vae" or "diffusion", "vae_diffusion"
@@ -14,6 +15,7 @@ TRAIN:
     DIFF_PE_TYPE: convofusion
     PREDICT_EPSILON: True # noise or motion
     MLP_DIST: False
+    WEG_type: 'no'
   DATASETS: ['beatdnd'] # Training datasets
   NUM_WORKERS: 11 # Number of workers
   BATCH_SIZE: 128 # Size of batches
@@ -74,7 +76,6 @@ LOSS:
   DIST_SYNC_ON_STEP: False # Sync Losses on step when distributed trained
 
 # Model Configuration
-# todo check weg_type
 model:
   vae: true # whether vae model
   model_type: convofusion # model type
@@ -87,7 +88,6 @@ model:
   activation: gelu # activation type
   guidance_scale: 7.5 #
   guidance_uncondp: 0.1 # 0.1 0.25
-  WEG_type: 'no'
 
 # Logger configuration
 LOGGER:
