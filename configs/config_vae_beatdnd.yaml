@@ -15,7 +15,7 @@ TRAIN:
     DIFF_PE_TYPE: convofusion
     PREDICT_EPSILON: True # noise or motion
     MLP_DIST: False
-    WEG_type: 'no'
+    WEG_TYPE: 'no'
   DATASETS: ['beatdnd'] # Training datasets
   NUM_WORKERS: 11 # Number of workers
   BATCH_SIZE: 128 # Size of batches
