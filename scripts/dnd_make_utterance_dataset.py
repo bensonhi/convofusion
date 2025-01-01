@@ -123,13 +123,6 @@ def transcribe(audio):
 def process_session(session_path, output_folder):
     logging.info(os.path.basename(session_path))
 
-    start_motion_frame = {
-            "joints_24_10_22": 185,
-            "joints_28_10_22": 166,
-            "joints_03_02_23": 88,
-            "joints_03_02_23_nonverbalremoved": 88,
-            "joints_24_02_23": 0,
-        }
 
     max_audio_len = int(((128)/25) * 1000) # 128 frames at 25 fps
     max_motion_len = 128 # 128 frames at 25 fps
@@ -150,10 +143,8 @@ def process_session(session_path, output_folder):
         m_csv = glob.glob(os.path.join(p_path, '*.csv'))[0]
         name = os.path.basename(p_path)
         csv_df = pd.read_csv(m_csv, header=None)
-        frame_array = csv_df.values[:, 1:].reshape(-1, 67, 3)
+        frame_array = csv_df.values[:, 1:].reshape(-1, 54, 3)
         frame_array = frame_array[:, [3] + list(range(0,3)) + list(range(4,frame_array.shape[1])) , :]
-        #start_idx = start_motion_frame[os.path.basename(session_path)]
-        #frame_array = frame_array[start_idx:]
 
         # Resample motion to 25 fps for joints_28_10_22
         if os.path.basename(session_path) == "joints_28_10_22":
