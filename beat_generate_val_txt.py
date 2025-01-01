@@ -40,7 +40,7 @@ def list_npy_files_in_directory(directory, val_file, train_file):
 # Specify the directory and output files
 directory = '/home/bwang/ar85/ben/convofusion/datasets/beat_english_v0.2.1_processed/'
 val_file = '/home/bwang/ar85/ben/convofusion/datasets/beat_english_v0.2.1_processed/val.txt'
-train_file = '/home/bwang/ar85/ben/convofusion/datasetsbeat_english_v0.2.1_processed/train.txt'
+train_file = '/home/bwang/ar85/ben/convofusion/datasets/beat_english_v0.2.1_processed/train.txt'
 
 # Call the function
 list_npy_files_in_directory(directory, val_file, train_file)
