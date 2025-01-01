@@ -416,7 +416,7 @@ class BEATAugReactionDataset(data.Dataset):
         # breakpoint()
         print("Length of loaded data from DnD: %d" % len(dnd_names))
         self.data_dict = data_dict
-        self.nfeats = motion_lsn.shape[-1] # 63*3
+        self.nfeats = 162
         self.name_list = name_list
         print("Length of total loaded data: %d" % len(self.name_list))
             
