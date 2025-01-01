@@ -52,8 +52,8 @@ class ConvoFusionVae(nn.Module):
         self.latent_dim = latent_dim[-1]
         input_feats = nfeats
         output_feats = nfeats
-        self.body_nfeats = 23*3
-        self.hands_nfeats = 40*3
+        self.body_nfeats = 24*3
+        self.hands_nfeats = 30*3
         self.arch = arch
         self.mlp_dist = ablation.MLP_DIST
         self.pe_type = ablation.PE_TYPE
