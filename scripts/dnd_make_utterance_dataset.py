@@ -59,6 +59,7 @@ logging.basicConfig(
 
 # np.random.seed(0)
 
+model = whisper.load_model("medium.en", device="cuda")
 
 def split_on_silence(audio_segment, min_silence_len=1000, silence_thresh=-16, keep_silence=100,
                      seek_step=1):
@@ -110,7 +111,6 @@ def split_on_silence(audio_segment, min_silence_len=1000, silence_thresh=-16, ke
 
 
 def transcribe(audio):
-    model = whisper.load_model("medium.en", device="cuda")
     audio_array = audio.get_array_of_samples()
     # 
     audio_np = np.array(audio_array).T.astype(np.float32)
