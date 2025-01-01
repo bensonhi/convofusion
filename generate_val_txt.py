@@ -20,7 +20,7 @@ def list_folders_in_directory(directory, output_file):
 
 # Specify the directory and output file
 directory = '/home/bwang/ar85/ben/convofusion/datasets/dnd_processed_5sec/'
-output_file = '/home/bwang/ar85/ben/convofusion/datasets/dnd_processed_5sec//val.txt'
+output_file = '/home/bwang/ar85/ben/convofusion/datasets/dnd_processed_5sec/val.txt'
 
 # Call the function
 list_folders_in_directory(directory, output_file)
