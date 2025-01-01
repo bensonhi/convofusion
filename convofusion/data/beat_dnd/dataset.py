@@ -815,7 +815,7 @@ class MotionDataset(data.Dataset):
         # min_motion_len = 40 if dataset_name =='t2m' else 24
         self.min_motion_length = min_motion_length
         self.unit_length = unit_length # this is used to convert motion length into multiples of unit_length
-        self.njoints = 63
+        self.njoints = 54
         self.face_joint_idx = kwargs['face_joint_idx']
         self.dataset_select = kwargs['dataset_select']
         # breakpoint()
@@ -1114,7 +1114,6 @@ class MotionDataset(data.Dataset):
         # chunk_start += s_idx
         # print("motion length after second cut", len(motion), m_length, chunk_start, start_idx, end_idx, s_idx)
 
-        print(motion.shape)
         
         motion = motion.reshape(-1, self.njoints * 3)
 
