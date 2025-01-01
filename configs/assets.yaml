@@ -5,9 +5,9 @@ TEST:
 
 DATASET:
   BEATDND:
-    ROOT: ['/CT/mmughal/work/GestureSynth/BEAT/datasets/beat_english_v0.2.1/', '/CT/GroupGesture/work/GestureSynth/aug_ut_data_5sec/']
-    SPLIT_ROOT: ['/CT/mmughal/work/GestureSynth/BEAT/datasets/beat_english_v0.2.1/', '/CT/GroupGesture/work/GestureSynth/aug_ut_data_5sec/']
-    VAE_SPLIT_ROOT: ['/CT/mmughal/work/GestureSynth/BEAT/datasets/beat_english_v0.2.1/', '/CT/GroupGesture/work/GestureSynth/aug_ut_data_5sec/']
+    ROOT: ['/home/bwang/ar85/ben/convofusion/datasets/beat_english_v0.2.1_processed/', '/home/bwang/ar85/ben/convofusion/datasets/dnd_processed_5sec/']
+    SPLIT_ROOT: ['/home/bwang/ar85/ben/convofusion/datasets/beat_english_v0.2.1_processed/', '/home/bwang/ar85/ben/convofusion/datasets/dnd_processed_5sec/']
+    VAE_SPLIT_ROOT: ['/home/bwang/ar85/ben/convofusion/datasets/beat_english_v0.2.1_processed/', '/home/bwang/ar85/ben/convofusion/datasets/dnd_processed_5sec/']
     # REACT_DATA_ROOT: /CT/GroupGesture/work/GestureSynth/test_ut_data
     # REACT_SPLIT_ROOT: /CT/GroupGesture/work/GestureSynth/test_ut_data
     # KINEMATIC_TREE: [[0, 1, 2, 3, 4, 5, 6, 7, 8], [0, 63, 64, 65, 66, 67, 68], [0, 69, 70, 71, 72, 73, 74], [4, 9, 10, 11, 12], [4, 36, 37, 38, 39], [12, 13, 14, 15, 16], [12, 17, 18, 19, 20, 21], [12, 27, 28, 29, 30, 31], [27, 32, 33, 34, 35], [17, 22, 23, 24, 25, 26], [39, 40, 41, 42, 43], [39, 44, 45, 46, 47, 48], [44, 49, 50, 51, 52, 53], [39, 54, 55, 56, 57, 58], [54, 59, 60, 61, 62]]
