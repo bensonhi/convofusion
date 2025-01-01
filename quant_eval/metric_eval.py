@@ -395,8 +395,8 @@ if __name__ == '__main__':
         # pred = smoothing(pred)
 
 
-        gt = gt.reshape(-1, 189)
-        pred = pred.reshape(-1, 189)
+        gt = gt.reshape(-1, 162)
+        pred = pred.reshape(-1, 162)
 
         # load lsn audio file and reshape (-1)
         audio_file = gt_file.replace('gt.npy', 'lsn_audio.wav')
@@ -407,10 +407,10 @@ if __name__ == '__main__':
 
         # get audio pose beats and calculate alignment
         
-        gt_np = gt.reshape(128, 63, 3).copy() 
-        pred_np = pred.reshape(128, 63, 3).copy()
-        pred_align = pred_np.reshape(-1, 189).copy()    
-        gt_align = gt_np.reshape(-1, 189).copy()
+        gt_np = gt.reshape(128, 54, 3).copy() 
+        pred_np = pred.reshape(128, 54, 3).copy()
+        pred_align = pred_np.reshape(-1, 162).copy()    
+        gt_align = gt_np.reshape(-1, 162).copy()
 
         _ = srgr_cal.run(pred, gt, sem)
 

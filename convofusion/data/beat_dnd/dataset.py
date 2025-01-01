@@ -88,7 +88,7 @@ class BEATAugReactionDataset(data.Dataset):
         # min_motion_len = 40 if dataset_name =='t2m' else 24
         self.min_motion_length = min_motion_length
         self.unit_length = unit_length # this is used to convert motion length into multiples of unit_length
-        self.njoints = 63
+        self.njoints = 54
         self.face_joint_idx = kwargs['face_joint_idx']
         self.SR = kwargs['sample_rate']
         self.N_MELS = kwargs['num_mels']
@@ -158,7 +158,7 @@ class BEATAugReactionDataset(data.Dataset):
             assert self.motion_rep == 'pos', 'motion_rep should be pos for BEAT dataset'
             # breakpoint()
             # reorder joints to make root joint first
-            motion = motion[:, [3] + list(range(0,3)) + list(range(4, motion.shape[1])) , :] 
+            motion = motion[:, range(54), :] # 54 joints - 8 spine/head + 15 joints per hand + 4 joints per leg
             motion = motion * 10 # cm to mm to match with dnd dataset
             motion = motion[:motion.shape[0] - motion.shape[0] % self.max_motion_length] # (n_chunks * window_size, dim)
             motion_chunks = np.array_split(motion, motion.shape[0] // self.max_motion_length, axis=0) # (n_chunks, window_size, dim)
