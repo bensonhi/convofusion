@@ -575,7 +575,7 @@ class BEATAugReactionDataset(data.Dataset):
         for motion in motions:
             # motion - (seq_len, joints, 3)
             # breakpoint()
-            motion = motion[:, list(range(0,23)) +  list(range(24,44)) + list(range(46,66)), :] # njoints are 63 - 23 body 20 left and 20 right hands
+            motion = motion[:, range(54), :] # 54 joints - 8 spine/head + 15 joints per hand + 4 joints per leg
             motion = motion/1000 # mm to m
             # reorder joints to make root joint first - already ordered in utterance making script for dnd dataset
             # motion = motion[:, [3] + list(range(0,3)) + list(range(4, motion.shape[1])) , :] 
