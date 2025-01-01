@@ -1113,6 +1113,8 @@ class MotionDataset(data.Dataset):
         # motion = motion[s_idx:s_idx + m_length]
         # chunk_start += s_idx
         # print("motion length after second cut", len(motion), m_length, chunk_start, start_idx, end_idx, s_idx)
+
+        print(motion.shape)
         
         motion = motion.reshape(-1, self.njoints * 3)
 
