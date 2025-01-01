@@ -7,7 +7,7 @@ from tqdm import tqdm
 
 # from multiprocessing import Pool
 
-model = whisper.load_model("medium.en")
+model = whisper.load_model("medium.en", device="cuda")
 
 def transcribe(audio_path):
     audio_array, sr = librosa.load(audio_path, sr=16000)
