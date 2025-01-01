@@ -10,7 +10,7 @@ def transcribe(model, audio_path):
 
 def main(src_dir, 
          out_dir):
-    model = whisper.load_model("medium.en")
+    model = whisper.load_model("medium.en", device="cuda")
 
     audio_files = glob.glob(os.path.join(src_dir, "*/*.wav"))
     for audio_path in tqdm(audio_files):
