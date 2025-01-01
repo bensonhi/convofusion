@@ -349,7 +349,7 @@ def process_utterance(session_path, person_id, utterance_id, audio_path, motion_
 
 if __name__ == "__main__":
     logging.info(msg="Starting to process sessions")
-    session_parent_folder = '/CT/GroupGesture/work/DnD_first_three_recordings/joint_pos/joint_csv/final/'
+    session_parent_folder = '/home/bwang/ar85/ben/convofusion/datasets/dnd_processed'
     session_folders = glob.glob(os.path.join(session_parent_folder, '*'))
     for session_folder in session_folders:
-        process_session(session_path=session_folder, output_folder='/CT/GroupGesture/work/GestureSynth/ut_data_30sec')
+        process_session(session_path=session_folder, output_folder='/home/bwang/ar85/ben/convofusion/datasets/dnd_processed_5sec')
