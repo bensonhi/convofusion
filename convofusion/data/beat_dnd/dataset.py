@@ -1034,7 +1034,7 @@ class MotionDataset(data.Dataset):
             motion = motion_dict['motion']
             # breakpoint()
             #  Put on floor
-            motion = motion[:, list(range(0,23)) +  list(range(24,44)) + list(range(46,66)), :] # njoints are 63 - 23 body 20 left and 20 right hands
+            motion = motion[:, list(range(0,54)), :] # njoints are 63 - 23 body 20 left and 20 right hands
             motion = motion/1000
 
             # reordering done in utterance script and loading script for dnd dataset
