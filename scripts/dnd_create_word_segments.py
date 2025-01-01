@@ -38,7 +38,7 @@ def process_files(af):
     # print(af, text)
 
 if __name__=='__main__':
-    audio_files = glob.glob('/CT/GroupGesture/work/GestureSynth/ut_data_30sec/*/*/*.wav')
+    audio_files = glob.glob('/home/bwang/ar85/ben/convofusion/datasets/dnd_processed_5sec/*/*/*.wav')
     # breakpoint()
     # audio_files = audio_files[61369:]
     print("Number of files: ", len(audio_files))
