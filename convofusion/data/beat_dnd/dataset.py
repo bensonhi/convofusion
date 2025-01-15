@@ -629,9 +629,9 @@ class BEATAugReactionDataset(data.Dataset):
             # print(lsn_name)
         elif dataset_name == 'dnd':
             # check if any of speaker names are contained in name
-            spk_name = [x for x in self.dnd_speaker_names if x in path_name]
-            assert len(spk_name) == 1, 'speaker name not found in name: {}'.format(path_name)
-            lsns = [x for x in self.dnd_speaker_names if x not in path_name]
+            spk_name = [path_name.split('/')[1].split('_')[0].strip()]
+            assert (len(spk_name) == 1 & (spk_name[0] in self.dnd_speaker_names)), 'speaker name not found in name: {}'.format(path_name)
+            lsns = [x for x in self.dnd_speaker_names if x not in spk_name]
             assert len(lsns) == 4, 'lsn names found in name: {}'.format(path_name)
             spk_name = spk_name[0]
             
