@@ -96,7 +96,7 @@ class BEATAugReactionDataset(data.Dataset):
         self.FPS = kwargs['fps']
         self.dataset_select = kwargs['dataset_select']
         # breakpoint()
-        self.dnd_speaker_names = ['anne', 'ben', 'chris', 'jack', 'lilas']
+        self.dnd_speaker_names = ['a', 'b', 'c', 'j', 'l']
         self.beat_speaker_names = ['wayne', 'scott', 'solomon', 'lawrence', 'stewart', 'carla', 'sophie', 'catherine', 'miranda', 'kieks', 'nidal', 'zhao', 'lu', 'zhang', 'carlos', 'jorge', 'itoi', 'daiki', 'jaime', 'li', 'ayana', 'luqi', 'hailing', 'kexin', 'goto', 'reamey', 'yingqing', 'tiffnay', 'hanieh', 'katya']
         self.speaker_names = self.dnd_speaker_names + self.beat_speaker_names
 
