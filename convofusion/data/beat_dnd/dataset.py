@@ -595,7 +595,10 @@ class BEATAugReactionDataset(data.Dataset):
         texts_lsn = data['texts_lsn']
         active_passive_bit = data['active_passive_bit']
         sem_lsn = data['sem_lsn']
-        sem_info = data['sem_info']
+        try:
+            sem_info = data['sem_info']
+        except:
+            sem_info= np.array([0.] * self.max_motion_length)
 
         if dataset_name == 'dnd':
             # active_idx = [idx for idx, x in enumerate(active_passive_bit) if x.sum() != 0]
