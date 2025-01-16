@@ -45,10 +45,10 @@ def list_folders_in_directory(directory, val_file, train_file, test_file):
 
 
 # Specify the directory and output files
-directory = './datasets/DnD_processed_jointpos/'
-val_file = './datasets/DnD_processed_jointpos/val.txt'
-test_file = './datasets/DnD_processed_jointpos/test.txt'
-train_file = './datasets/DnD_processed_jointpos/train.txt'
+directory = './datasets/utterance_dataset_5sec/'
+val_file = './datasets/utterance_dataset_5sec/val.txt'
+test_file = './datasets/utterance_dataset_5sec/test.txt'
+train_file = './datasets/utterance_dataset_5sec/train.txt'
 
 # Call the function
 list_folders_in_directory(directory, val_file, train_file, test_file)
