@@ -16,6 +16,7 @@ from scipy.interpolate import interp1d
 import whisper
 import itertools
 import logging
+import time
 
 # from sklearn.preprocessing import MinMaxScaler
 
@@ -323,14 +324,7 @@ def process_session(session_path, output_folder, num_frames=128):
 
 if __name__ == "__main__":
     logging.info(msg="Starting to process sessions")
-    session_parent_folder = './datasets/DnD_processed_jointpos/'
+    session_parent_folder = '/Users/wangbingsheng/PycharmProjects/convofusion/datasets/dnd_processed'
     session_folders = glob.glob(os.path.join(session_parent_folder, '*'))
-
     for session_folder in session_folders:
-        process_session(
-            session_path=session_folder, 
-            output_folder='./datasets/utterance_dataset_5sec',
-            # num_frames=128*6 # uncomment to make 30 seconds long chunks
-            )
-
-
+        process_session(session_path=session_folder, output_folder='/Users/wangbingsheng/PycharmProjects/convofusion/datasets/dnd_processed_5sec')
