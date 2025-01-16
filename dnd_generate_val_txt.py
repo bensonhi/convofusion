@@ -17,7 +17,7 @@ def list_folders_in_directory(directory, val_file, train_file, test_file):
                         variable = random.random()
                         if variable > 0.9:
                             val_folders.append(os.path.join(p, file))
-                        elif random.random() > 0.8:
+                        elif variable > 0.8:
                             test_folders.append(os.path.join(p, file))
                         else:
                             train_folders.append(os.path.join(p, file))
@@ -36,9 +36,9 @@ def list_folders_in_directory(directory, val_file, train_file, test_file):
             for folder in train_folders:
                 file.write(folder + '\n')
 
-        print(f"Validation folders written to {val_file}")
-        print(f"Training folders written to {train_file}")
-        print(f"Training folders written to {test_file}")
+        print(f"Validation folders written to {val_file} {len(val_folders)}")
+        print(f"Training folders written to {train_file} {len(train_folders)}")
+        print(f"Training folders written to {test_file} {len(test_folders)}")
 
     except Exception as e:
         print(f"An error occurred: {e}")
