@@ -21,8 +21,8 @@ TRAIN:
   BATCH_SIZE: 128 # Size of batches
   START_EPOCH: 0 # Start epochMMOTIONENCODER
   END_EPOCH: 6000 # End epoch
-  RESUME: './experiments/convofusion/pretrained_vae/checkpoints' # Resume training from this path
-  PRETRAINED_VAE: ''
+  RESUME: '' # Resume training from this path
+  PRETRAINED_VAE: '/home/bwang/ar85_scratch/ben/convofusion/experiments/convofusion/pretrained_vae/checkpoints/epoch=989-st.ckpt'
   OPTIM:
     TYPE: AdamW # Optimizer type
     LR: 1e-4 # Learning rate
