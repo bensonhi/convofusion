@@ -51,7 +51,7 @@ DATASET:
     MAX_LEN: 128
     MIN_LEN: 128
   BEATDND:
-    SELECT: 'beat'
+    SELECT: 'both'
     POSE_REP: 'pos'
     UNIT_LEN: 1
     SR: 16000
