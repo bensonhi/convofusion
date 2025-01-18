@@ -1,4 +1,4 @@
-NAME: vae_with_pretrained # beat_joints_vae_lat512_len128_handsrel_noego_alleq_posfix2 # beat_6d_vae_lat512_len128_scaled10 #1222_PELearn_VAE_MEncDec49_MdiffEnc49_bs64_clip_uncond75_01 # Experiment name
+NAME: beatdnd_joints_vae_lat2x128_len128_lkl_handsc_timechunk8_rootposfix_rb_bonelenlossonlyframes2_wristnormchange # beat_joints_vae_lat512_len128_handsrel_noego_alleq_posfix2 # beat_6d_vae_lat512_len128_scaled10 #1222_PELearn_VAE_MEncDec49_MdiffEnc49_bs64_clip_uncond75_01 # Experiment name
 DEBUG: False # Debug mode
 ACCELERATOR: 'gpu' # Devices optioncal: “cpu”, “gpu”, “tpu”, “ipu”, “hpu”, “mps, “auto”
 DEVICE: [0] # Index of gpus eg. [0] or [0,1,2,3]
@@ -21,8 +21,8 @@ TRAIN:
   BATCH_SIZE: 128 # Size of batches
   START_EPOCH: 0 # Start epochMMOTIONENCODER
   END_EPOCH: 6000 # End epoch
-  RESUME: '' # Resume training from this path
-  PRETRAINED_VAE: '/home/bwang/ar85_scratch/ben/convofusion/experiments/convofusion/pretrained_vae/checkpoints/epoch=989-st.ckpt'
+  RESUME: '/home/bwang/ar85_scratch/ben/convofusion/experiments/convofusion/beatdnd_joints_vae_lat2x128_len128_lkl_handsc_timechunk8_rootposfix_rb_bonelenlossonlyframes2_wristnormchange/checkpoints/epoch=959.ckpt' # Resume training from this path
+  PRETRAINED_VAE: ''
   OPTIM:
     TYPE: AdamW # Optimizer type
     LR: 1e-4 # Learning rate
