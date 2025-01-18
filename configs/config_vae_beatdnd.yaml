@@ -20,7 +20,7 @@ TRAIN:
   NUM_WORKERS: 11 # Number of workers
   BATCH_SIZE: 128 # Size of batches
   START_EPOCH: 0 # Start epochMMOTIONENCODER
-  END_EPOCH: 6000 # End epoch
+  END_EPOCH: 3000 # End epoch
   RESUME: '/home/bwang/ar85_scratch/ben/convofusion/experiments/convofusion/beatdnd_joints_vae_lat2x128_len128_lkl_handsc_timechunk8_rootposfix_rb_bonelenlossonlyframes2_wristnormchange' # Resume training from this path
   PRETRAINED_VAE: ''
   OPTIM:
