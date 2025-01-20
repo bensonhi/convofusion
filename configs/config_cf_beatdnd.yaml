@@ -32,7 +32,7 @@ TRAIN:
   END_EPOCH: 2000
   
 
-  RESUME: '' # Resume training from this path
+  RESUME: './experiments/convofusion/beatdndspk_joints_rld_lat2x128_mixatt_ddpm_uncond01_gs75_tspksmol_talsn_timechunk8vaeapb_bhposbhembed_timeaddnlayer_rootposfixrbwristnorm_textmaskfix_conditionid_lowaudionoise_bs32_dropexceptcond_eosbos' # Resume training from this path
   PRETRAINED_VAE: './experiments/convofusion/beatdnd_joints_vae_lat2x128_len128_lkl_handsc_timechunk8_rootposfix_rb_bonelenlossonlyframes2_wristnormchange/checkpoints/epoch=2009.ckpt' # vae model path
   OPTIM:
     TYPE: AdamW # Optimizer type
