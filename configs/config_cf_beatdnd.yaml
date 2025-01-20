@@ -3,7 +3,7 @@
 ####################################
 
 # Experiment name, more details in Section 'Experiment Name Explanation'
-NAME: test #beatdndspk_joints_rld_lat2x128_mixatt_ddpm_uncond01_gs75_tspksmol_talsn_timechunk8vaeapb_bhposbhembed_timeaddnlayer_rootposfixrbwristnorm_textmaskfix_conditionid_lowaudionoise_bs32_dropexceptcond_eosbos #1222_PELearn_Diff_Latent1_MEncDec49_MdiffEnc49_bs64_clip_uncond75_01
+NAME: with_pretrained_final_model #beatdndspk_joints_rld_lat2x128_mixatt_ddpm_uncond01_gs75_tspksmol_talsn_timechunk8vaeapb_bhposbhembed_timeaddnlayer_rootposfixrbwristnorm_textmaskfix_conditionid_lowaudionoise_bs32_dropexceptcond_eosbos #1222_PELearn_Diff_Latent1_MEncDec49_MdiffEnc49_bs64_clip_uncond75_01
 # Debug mode. Set to True will enter the debug mode, then the program will
 # 1. use a tiny dataset for trianing and evaluation
 # 2. validate more intensively
