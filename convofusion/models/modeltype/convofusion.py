@@ -864,8 +864,11 @@ class Convofusion(BaseModel):
             if self.WEG_type == 'semantic':
                 # utilize semantic information to select focus words from BEAT dataset 
                 # breakpoint()
-                assert self.datamodule._sample_set.dataset_select == 'beat', "Semantic WEG only supported for BEAT dataset"
-                focus_words = [[entry['word'] for entry in batch['sem_info'][i] if isinstance(entry['word'], str)] for i in range(bs)]
+                #assert self.datamodule._sample_set.dataset_select == 'beat', "Semantic WEG only supported for BEAT dataset"
+                try:
+                    focus_words = [[entry['word'] for entry in batch['sem_info'][i] if isinstance(entry['word'], str)] for i in range(bs)]
+                except:
+                    focus_words=[]
             elif self.WEG_type == 'random':
                 text_tokenized = [word_tokenize(text) for text in full_text_lsn]
                 pos_tags = [nltk.pos_tag(tt) for tt in text_tokenized]
