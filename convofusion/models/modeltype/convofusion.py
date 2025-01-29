@@ -541,6 +541,8 @@ class Convofusion(BaseModel):
                 
                 noise_pred =  noise_pred_uncond + (noise_pred_text + noise_pred_audio + noise_pred_spk + noise_pred_apb + noise_pred_lsnid + noise_pred_all)
 
+            t=t.to(latents.device)
+            latents=latents.to(latents.device)
             noise_pred = noise_pred.to(latents.device)
             extra_step_kwargs = {k: v.to(latents.device) if isinstance(v, torch.Tensor) else v
                                  for k, v in extra_step_kwargs.items()}
