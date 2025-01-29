@@ -102,7 +102,6 @@ class Convofusion(BaseModel):
                 cfg.model.scheduler.params['prediction_type'] = 'sample'
                 cfg.model.noise_scheduler.params['prediction_type'] = 'sample'
             self.scheduler = instantiate_from_config(cfg.model.scheduler)
-            self.scheduler = self.scheduler.to('cuda')
             self.noise_scheduler = instantiate_from_config(
                 cfg.model.noise_scheduler)
 
