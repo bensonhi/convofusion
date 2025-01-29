@@ -541,7 +541,7 @@ class Convofusion(BaseModel):
                 noise_pred =  noise_pred_uncond + (noise_pred_text + noise_pred_audio + noise_pred_spk + noise_pred_apb + noise_pred_lsnid + noise_pred_all)
             
             # att_mats = [att_mat.chunk(guidance_bs_mulitplier)[1] for att_mat in att_mats]
-            latents = self.scheduler.step(noise_pred, t, latents,
+            latents = self.scheduler.step(noise_pred, t, latents.cuda(),
                                               **extra_step_kwargs).prev_sample
             
 
