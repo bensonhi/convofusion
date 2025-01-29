@@ -92,7 +92,7 @@ def main():
         benchmark=False,
         max_epochs=cfg.TRAIN.END_EPOCH,
         accelerator=cfg.ACCELERATOR,
-        devices=list(range(len(cfg.DEVICE))),
+        devices=1,
         default_root_dir=cfg.FOLDER_EXP,
         reload_dataloaders_every_n_epochs=1,
         log_every_n_steps=1, #cfg.LOGGER.LOG_EVERY_STEPS,
