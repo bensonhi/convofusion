@@ -147,7 +147,9 @@ class Convofusion(BaseModel):
         if self.laplace_kernel_size > 0:
             self.laplace_kernel = laplacian_1d(self.laplace_kernel_size)[None, None, :]
             self.laplace_kernel.requires_grad = False
-    
+
+        cfg.model.to('cuda')
+
 
     def sample_from_distribution(
         self,
@@ -541,11 +543,7 @@ class Convofusion(BaseModel):
                 noise_pred =  noise_pred_uncond + (noise_pred_text + noise_pred_audio + noise_pred_spk + noise_pred_apb + noise_pred_lsnid + noise_pred_all)
             
             # att_mats = [att_mat.chunk(guidance_bs_mulitplier)[1] for att_mat in att_mats]
-            print(noise_pred.is_cuda)
-            print(t.is_cuda)
-            print(latents.is_cuda)
-            print(hihi)
-            latents = self.scheduler.step(noise_pred, t, latents.cuda(),
+            latents = self.scheduler.step(noise_pred, t, latents,
                                               **extra_step_kwargs).prev_sample
             
 
