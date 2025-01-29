@@ -544,6 +544,7 @@ class Convofusion(BaseModel):
 
             print(self.device)
             print(latents.device)
+            print(encoder_hidden_states[0].device)
             print(hihi)
             t=t.to(latents.device)
             latents=latents.to(latents.device)
