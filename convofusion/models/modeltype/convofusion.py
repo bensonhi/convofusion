@@ -102,6 +102,7 @@ class Convofusion(BaseModel):
                 cfg.model.scheduler.params['prediction_type'] = 'sample'
                 cfg.model.noise_scheduler.params['prediction_type'] = 'sample'
             self.scheduler = instantiate_from_config(cfg.model.scheduler)
+            self.scheduler = self.scheduler.to('cuda')
             self.noise_scheduler = instantiate_from_config(
                 cfg.model.noise_scheduler)
 
@@ -541,7 +542,9 @@ class Convofusion(BaseModel):
                 
                 noise_pred =  noise_pred_uncond + (noise_pred_text + noise_pred_audio + noise_pred_spk + noise_pred_apb + noise_pred_lsnid + noise_pred_all)
 
-            print(latents.device)
+            noise_pred = noise_pred.to(latents.device)
+            extra_step_kwargs = {k: v.to(latents.device) if isinstance(v, torch.Tensor) else v
+                                 for k, v in extra_step_kwargs.items()}
             # att_mats = [att_mat.chunk(guidance_bs_mulitplier)[1] for att_mat in att_mats]
             latents = self.scheduler.step(noise_pred, t, latents,
                                               **extra_step_kwargs).prev_sample
