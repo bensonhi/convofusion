@@ -540,7 +540,8 @@ class Convofusion(BaseModel):
                 noise_pred_all = self.guidance_scale * 0 * (noise_pred_fullcond - noise_pred_uncond) 
                 
                 noise_pred =  noise_pred_uncond + (noise_pred_text + noise_pred_audio + noise_pred_spk + noise_pred_apb + noise_pred_lsnid + noise_pred_all)
-            
+
+            print(latents.device)
             # att_mats = [att_mat.chunk(guidance_bs_mulitplier)[1] for att_mat in att_mats]
             latents = self.scheduler.step(noise_pred, t, latents,
                                               **extra_step_kwargs).prev_sample
