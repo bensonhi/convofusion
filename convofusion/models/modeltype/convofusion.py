@@ -148,7 +148,6 @@ class Convofusion(BaseModel):
             self.laplace_kernel = laplacian_1d(self.laplace_kernel_size)[None, None, :]
             self.laplace_kernel.requires_grad = False
 
-        cfg.model.to('cuda')
 
 
     def sample_from_distribution(
@@ -817,6 +816,9 @@ class Convofusion(BaseModel):
         return {**n_set}
 
     def test_diffusion_forward(self, batch, finetune_decoder=False, split="test"):
+        for key in batch:
+            if isinstance(batch[key], torch.Tensor):
+                batch[key] = batch[key].to(self.device)
         # breakpoint()
         # breakpoint()
         lengths = batch["length"]
