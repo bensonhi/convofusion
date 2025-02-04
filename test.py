@@ -63,6 +63,16 @@ def main():
     logger.info("datasets module {} initialized".format("".join(
         cfg.TRAIN.DATASETS)))
 
+    # Limit dataset size for faster testing
+    if hasattr(datasets.dataset, 'data'):
+        logger.info("Limiting dataset size to 100 samples for faster testing")
+        datasets.dataset.data = datasets.dataset.data[:100]  # Take first 100 samples
+    elif hasattr(datasets.dataset, 'datasets'):
+        logger.info("Limiting dataset size to 100 samples for faster testing")
+        for ds in datasets.dataset.datasets:
+            if hasattr(ds, 'data'):
+                ds.data = ds.data[:100]
+
     # create model
     model = get_model(cfg, datasets)
     logger.info("model {} loaded".format(cfg.model.model_type))
