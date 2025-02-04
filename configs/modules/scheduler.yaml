@@ -9,6 +9,7 @@ scheduler:
     beta_schedule: 'scaled_linear' # Optional: ['linear', 'scaled_linear', 'squaredcos_cap_v2']
     variance_type: 'fixed_small'
     clip_sample: true # clip sample to -1~1
+    device_name: 'cuda:0'  # Explicitly set device to CUDA
 
 noise_scheduler:
   target: diffusers.DDPMScheduler
@@ -19,5 +20,6 @@ noise_scheduler:
     beta_schedule: 'scaled_linear' # Optional: ['linear', 'scaled_linear', 'squaredcos_cap_v2']
     variance_type: 'fixed_small'
     clip_sample: true # clip sample to -1~1
+    device_name: 'cuda:0'  # Explicitly set device to CUDA
 
 

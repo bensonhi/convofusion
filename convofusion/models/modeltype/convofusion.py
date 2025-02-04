@@ -434,6 +434,8 @@ class Convofusion(BaseModel):
         attention_matrices = dict()
         # breakpoint()
         for i, t in enumerate(timesteps):
+            # Ensure timestep is on correct device
+            t = t.to(encoder_hidden_states[0].device)
             
             if len(focus_indices) > 0:
                 with torch.inference_mode(False):
