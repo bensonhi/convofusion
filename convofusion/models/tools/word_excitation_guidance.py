@@ -21,7 +21,6 @@ def get_max_attention_at_indices(att_mat, batch_idxs, smooth_attentions=False, n
     
     # breakpoint()
     if normalize_eot:
-        print(att_mat.shape[0])
         assert len(eot_indices) > 0, "Need to provide eot indices for normalization"
         assert att_mat.shape[0] == 1, "EOS/BOS normalization only works for test batch size 1 currently"
         last_idx = eot_indices[0]
