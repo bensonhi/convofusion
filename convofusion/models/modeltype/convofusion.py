@@ -418,12 +418,13 @@ class Convofusion(BaseModel):
 
         # scale the initial noise by the standard deviation required by the scheduler
         latents = latents * self.scheduler.init_noise_sigma
-        # set timesteps
-        self.scheduler.set_timesteps(
-            self.cfg.model.scheduler.num_inference_timesteps)
-        timesteps = self.scheduler.timesteps.to(encoder_hidden_states[0].device)
-        # prepare extra kwargs for the scheduler step, since not all schedulers have the same signature
-        # eta (η) is only used with the DDIMScheduler, and between [0, 1]
+        
+        # set timesteps and ensure they're on the correct device
+        self.scheduler.set_timesteps(self.cfg.model.scheduler.num_inference_timesteps)
+        self.scheduler.timesteps = self.scheduler.timesteps.to(encoder_hidden_states[0].device)
+        timesteps = self.scheduler.timesteps
+        
+        # prepare extra kwargs for the scheduler step
         extra_step_kwargs = {}
         if "eta" in set(
                 inspect.signature(self.scheduler.step).parameters.keys()):
