@@ -67,14 +67,14 @@ def main():
     datasets.setup('test')
     
     # Limit dataset size for faster testing
-    if hasattr(datasets.test_dataset, 'data'):
+    if hasattr(datasets.test_dataset, 'name_list'):
         logger.info("Limiting dataset size to 100 samples for faster testing")
-        datasets.test_dataset.data = datasets.test_dataset.data[:100]  # Take first 100 samples
-    elif isinstance(datasets.test_dataset.datasets, (list, tuple)):
-        logger.info("Limiting dataset size to 100 samples for faster testing")
-        for ds in datasets.test_dataset.datasets:
-            if hasattr(ds, 'data'):
-                ds.data = ds.data[:100]
+        original_size = len(datasets.test_dataset.name_list)
+        datasets.test_dataset.name_list = datasets.test_dataset.name_list[:100]
+        # Also limit the length list if it exists
+        if hasattr(datasets.test_dataset, 'length_list'):
+            datasets.test_dataset.length_list = datasets.test_dataset.length_list[:100]
+        logger.info(f"Dataset size reduced from {original_size} to {len(datasets.test_dataset.name_list)} samples")
 
     # create model
     model = get_model(cfg, datasets)
