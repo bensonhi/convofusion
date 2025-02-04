@@ -63,13 +63,16 @@ def main():
     logger.info("datasets module {} initialized".format("".join(
         cfg.TRAIN.DATASETS)))
 
+    # Setup the test dataset
+    datasets.setup('test')
+    
     # Limit dataset size for faster testing
-    if hasattr(datasets.dataset, 'data'):
+    if hasattr(datasets.test_dataset, 'data'):
         logger.info("Limiting dataset size to 100 samples for faster testing")
-        datasets.dataset.data = datasets.dataset.data[:100]  # Take first 100 samples
-    elif hasattr(datasets.dataset, 'datasets'):
+        datasets.test_dataset.data = datasets.test_dataset.data[:100]  # Take first 100 samples
+    elif isinstance(datasets.test_dataset.datasets, (list, tuple)):
         logger.info("Limiting dataset size to 100 samples for faster testing")
-        for ds in datasets.dataset.datasets:
+        for ds in datasets.test_dataset.datasets:
             if hasattr(ds, 'data'):
                 ds.data = ds.data[:100]
 
