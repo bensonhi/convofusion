@@ -126,7 +126,7 @@ def main():
     #test_results = trainer.test(model, datamodule=datasets, verbose=True)
     #print(test_results)
     all_metrics = {}
-    replication_times = cfg.TEST.REPLICATION_TIMES
+    replication_times = 1
     # calculate metrics
     for i in range(replication_times):
         metrics_type = ", ".join(cfg.METRIC.TYPE)
