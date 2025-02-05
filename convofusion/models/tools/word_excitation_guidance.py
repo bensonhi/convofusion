@@ -32,8 +32,10 @@ def get_max_attention_at_indices(att_mat, batch_idxs, smooth_attentions=False, n
     # 
     smoothing_operator = GaussianSmoothing(channels=1, kernel_size=3, sigma=0.5, dim=2)
     if smooth_attentions:
-        input = F.pad(attention_for_text.unsqueeze(1), (1, 1, 1, 1), mode='reflect')
-        attention_for_text = smoothing_operator(input).squeeze(1)
+        # Only apply smoothing if the attention matrix is large enough
+        if attention_for_text.shape[-1] > 2:
+            input = F.pad(attention_for_text.unsqueeze(1), (1, 1, 1, 1), mode='reflect')
+            attention_for_text = smoothing_operator(input).squeeze(1)
     # 
 
     batch_max_indices_list = []
