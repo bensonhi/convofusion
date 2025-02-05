@@ -123,8 +123,8 @@ def main():
                             map_location="cpu")["state_dict"]
     model.load_state_dict(state_dict)
 
-    test_results = trainer.test(model, datamodule=datasets, verbose=True)
-    print(test_results)
+    #test_results = trainer.test(model, datamodule=datasets, verbose=True)
+    #print(test_results)
     all_metrics = {}
     replication_times = 1
     # calculate metrics
@@ -146,6 +146,7 @@ def main():
                 all_metrics[key] += [item]
 
     # calculate metrics with statistics
+    metrics = trainer.validate(model, datamodule=datasets)
     all_metrics_new = {}
     for key, item in all_metrics.items():
         mean, conf_interval = get_metric_statistics(np.array(item),
