@@ -70,10 +70,10 @@ def main():
     if hasattr(datasets.test_dataset, 'name_list'):
         logger.info("Limiting dataset size to 100 samples for faster testing")
         original_size = len(datasets.test_dataset.name_list)
-        datasets.test_dataset.name_list = datasets.test_dataset.name_list[:3]
+        datasets.test_dataset.name_list = datasets.test_dataset.name_list[:1]
         # Also limit the length list if it exists
         if hasattr(datasets.test_dataset, 'length_list'):
-            datasets.test_dataset.length_list = datasets.test_dataset.length_list[:3]
+            datasets.test_dataset.length_list = datasets.test_dataset.length_list[:1]
         logger.info(f"Dataset size reduced from {original_size} to {len(datasets.test_dataset.name_list)} samples")
 
     # create model
@@ -123,8 +123,8 @@ def main():
                             map_location="cpu")["state_dict"]
     model.load_state_dict(state_dict)
 
-    test_results = trainer.test(model, datamodule=datasets, verbose=True)
-    print(test_results)
+    #test_results = trainer.test(model, datamodule=datasets, verbose=True)
+    #print(test_results)
     all_metrics = {}
     replication_times = cfg.TEST.REPLICATION_TIMES
     # calculate metrics
@@ -146,7 +146,6 @@ def main():
                 all_metrics[key] += [item]
 
     # calculate metrics with statistics
-    metrics = trainer.validate(model, datamodule=datasets)
     all_metrics_new = {}
     for key, item in all_metrics.items():
         mean, conf_interval = get_metric_statistics(np.array(item),
