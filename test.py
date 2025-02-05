@@ -70,7 +70,7 @@ def main():
     if hasattr(datasets.test_dataset, 'name_list'):
         logger.info("Limiting dataset size to 100 samples for faster testing")
         original_size = len(datasets.test_dataset.name_list)
-        datasets.test_dataset.name_list = datasets.test_dataset.name_list[:100]
+        datasets.test_dataset.name_list = datasets.test_dataset.name_list[:3]
         # Also limit the length list if it exists
         if hasattr(datasets.test_dataset, 'length_list'):
             datasets.test_dataset.length_list = datasets.test_dataset.length_list[:100]
@@ -145,7 +145,8 @@ def main():
             else:
                 all_metrics[key] += [item]
 
-    metrics = trainer.validate(model, datamodule=datasets[0])
+    # calculate metrics with statistics
+    metrics = trainer.validate(model, datamodule=datasets)
     all_metrics_new = {}
     for key, item in all_metrics.items():
         mean, conf_interval = get_metric_statistics(np.array(item),
