@@ -73,7 +73,7 @@ def main():
         datasets.test_dataset.name_list = datasets.test_dataset.name_list[:3]
         # Also limit the length list if it exists
         if hasattr(datasets.test_dataset, 'length_list'):
-            datasets.test_dataset.length_list = datasets.test_dataset.length_list[:100]
+            datasets.test_dataset.length_list = datasets.test_dataset.length_list[:3]
         logger.info(f"Dataset size reduced from {original_size} to {len(datasets.test_dataset.name_list)} samples")
 
     # create model
