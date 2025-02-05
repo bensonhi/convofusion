@@ -126,7 +126,7 @@ def main():
     #test_results = trainer.test(model, datamodule=datasets, verbose=True)
     #print(test_results)
     all_metrics = {}
-    replication_times = 1
+    replication_times = 2
     # calculate metrics
     for i in range(replication_times):
         metrics_type = ", ".join(cfg.METRIC.TYPE)
@@ -146,7 +146,6 @@ def main():
                 all_metrics[key] += [item]
 
     # calculate metrics with statistics
-    metrics = trainer.validate(model, datamodule=datasets)
     all_metrics_new = {}
     for key, item in all_metrics.items():
         mean, conf_interval = get_metric_statistics(np.array(item),
@@ -159,6 +158,7 @@ def main():
     metric_file = output_dir.parent / f"metrics_{cfg.TIME}.json"
     with open(metric_file, "w", encoding="utf-8") as f:
         json.dump(all_metrics_new, f, indent=4)
+    print(metric_file)
     logger.info(f"Testing done") #, the metrics are saved to {str(metric_file)}")
 
 
