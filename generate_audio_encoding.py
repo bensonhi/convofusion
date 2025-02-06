@@ -1,4 +1,6 @@
 import os
+import sys
+from tqdm import tqdm
 
 import tensorflow as tf
 import tensorflow_hub as hub
@@ -13,9 +15,16 @@ AUDIO_WINDOW_LENGTH = int((WINDOW_SIZE / VIDEO_FPS) * AUDIO_SAMPLE_RATE)
 
 def load_audio(audio_path):
     """Load and normalize audio file"""
-    audio, _ = librosa.load(audio_path, sr=AUDIO_SAMPLE_RATE)
-    audio = librosa.util.normalize(audio)
-    return audio
+    try:
+        audio, _ = librosa.load(audio_path, sr=AUDIO_SAMPLE_RATE)
+        if len(audio) == 0:
+            print(f"\tWarning: Empty audio file: {audio_path}")
+            return None
+        audio = librosa.util.normalize(audio)
+        return audio
+    except Exception as e:
+        print(f"\tError loading audio file {audio_path}: {str(e)}")
+        return None
 
 def audio_chunks(data, length):
     """Split audio into chunks"""
@@ -34,10 +43,14 @@ def audio_embeddings(chunks, module):
 
 def process_session(session_path, module):
     """Process all audio files in a session"""
-    print(f'Processing session: {os.path.basename(session_path)}')
-    
     # Process each speaker's audio files
     utterance_folders = sorted([f for f in os.listdir(session_path) if not f.startswith('.')])
+    
+    # Count total number of wav files for progress bar
+    total_files = sum(len([f for f in os.listdir(os.path.join(session_path, u)) if f.endswith('.wav')])
+                     for u in utterance_folders)
+    
+    pbar = tqdm(total=total_files, desc=f'Processing {os.path.basename(session_path)}')
     
     for utterance in utterance_folders:
         utterance_path = os.path.join(session_path, utterance)
@@ -50,18 +63,27 @@ def process_session(session_path, module):
             
             # Load and normalize audio
             audio = load_audio(wav_path)
+            if audio is None:
+                pbar.update(1)
+                continue
+                
+            try:
+                # Generate embedding
+                audio = np.expand_dims(audio, axis=0)
+                embedding = module(audio)['embedding'].numpy()
+                embedding = np.squeeze(embedding)
+                
+                # Save embedding in the same directory as the input file
+                output_file = os.path.join(utterance_path, 
+                                         audio_file.replace('.wav', '_audio_embedding.npy'))
+                np.save(output_file, embedding)
+                
+            except Exception as e:
+                print(f"\tError processing {wav_path}: {str(e)}")
             
-            # Generate embedding
-            audio = np.expand_dims(audio, axis=0)
-            embedding = module(audio)['embedding'].numpy()
-            embedding = np.squeeze(embedding)
-            
-            # Save embedding in the same directory as the input file
-            output_file = os.path.join(utterance_path, 
-                                     audio_file.replace('.wav', '_audio_embedding.npy'))
-            np.save(output_file, embedding)
-            
-            print(f'\tProcessed {wav_path}')
+            pbar.update(1)
+    
+    pbar.close()
 
 if __name__ == '__main__':
     # Load the TensorFlow Hub module
@@ -72,6 +94,8 @@ if __name__ == '__main__':
     
     # Process each session
     sessions = sorted([f for f in os.listdir(input_base_path) if not f.startswith('.')])
-    for session in sessions:
+    
+    # Create overall progress bar for sessions
+    for session in tqdm(sessions, desc='Processing sessions'):
         session_path = os.path.join(input_base_path, session)
         process_session(session_path, module)
