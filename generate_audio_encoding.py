@@ -90,7 +90,7 @@ if __name__ == '__main__':
     module = hub.KerasLayer('https://tfhub.dev/google/nonsemantic-speech-benchmark/trillsson3/1')
     
     # Define paths
-    input_base_path = './datasets/utterance_dataset_5sec'
+    input_base_path = './datasets/beat_english_v0.2.1'
     
     # Process each session
     sessions = sorted([f for f in os.listdir(input_base_path) if not f.startswith('.')])
