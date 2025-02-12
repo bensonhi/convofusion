@@ -1,4 +1,4 @@
-NAME: beatdnd_joints_vae_lat2x128_len128_lkl_handsc_timechunk8_rootposfix_rb_bonelenlossonlyframes2_wristnormchange # beat_joints_vae_lat512_len128_handsrel_noego_alleq_posfix2 # beat_6d_vae_lat512_len128_scaled10 #1222_PELearn_VAE_MEncDec49_MdiffEnc49_bs64_clip_uncond75_01 # Experiment name
+NAME: vae_without_audio_encoder # beat_joints_vae_lat512_len128_handsrel_noego_alleq_posfix2 # beat_6d_vae_lat512_len128_scaled10 #1222_PELearn_VAE_MEncDec49_MdiffEnc49_bs64_clip_uncond75_01 # Experiment name
 DEBUG: False # Debug mode
 ACCELERATOR: 'gpu' # Devices optioncal: “cpu”, “gpu”, “tpu”, “ipu”, “hpu”, “mps, “auto”
 DEVICE: [0] # Index of gpus eg. [0] or [0,1,2,3]
@@ -51,7 +51,7 @@ DATASET:
     MAX_LEN: 128
     MIN_LEN: 128
   BEATDND:
-    SELECT: 'both'
+    SELECT: 'beat'
     POSE_REP: 'pos'
     UNIT_LEN: 1
     SR: 16000
