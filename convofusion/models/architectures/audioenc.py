@@ -30,6 +30,7 @@ class AudioConvEncoder(nn.Module):
         """
         inputs: (batch_size, seq_len, dim)
         """
+        print("WARNING: AudioConvEncoder is still being called!")
         outputs = self.main(inputs)
         return self.out_net(outputs)
 
