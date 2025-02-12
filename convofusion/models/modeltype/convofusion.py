@@ -743,8 +743,8 @@ class Convofusion(BaseModel):
             # 
             text_lsn = batch["text_lsn"].copy()
             text_spk = batch["text_spk"].copy()
-            melspec_spk = batch["melspec_spk"].clone()
-            melspec_lsn = batch["melspec_lsn"].clone()
+            audio_emb_spk = batch["audio_emb_spk"].clone()
+            audio_emb_lsn = batch["audio_emb_lsn"].clone()
             active_passive_bit = batch["active_passive_lsn"].clone()
             motion_spk = batch["motion_spk"]
             lsn_id = batch["lsn_id"]
@@ -765,18 +765,19 @@ class Convofusion(BaseModel):
                 text_lsn[idx] = '-'*10
             
             # all drop except audio idxs
-            uncond_mel = -90 * torch.ones_like(melspec_lsn[0, :, :])
-            uncond_mel[..., 40:45] = 0
-
+            uncond_emb = torch.zeros_like(audio_emb_lsn[0])
             for idx in np.concatenate([all_drop, text_drop, spk_drop, apb_drop, lsnid_drop]):
-                melspec_lsn[idx] = uncond_mel
-
+                audio_emb_lsn[idx] = uncond_emb
+            
+            for idx in np.concatenate([all_drop, text_drop, audio_drop, apb_drop, lsnid_drop]):
+                audio_emb_spk[idx] = uncond_emb
+            
             # all drop except spk idxs
             for idx in np.concatenate([all_drop, text_drop, audio_drop, apb_drop, lsnid_drop]):
                 text_spk[idx] = '-'*10
 
             for idx in np.concatenate([all_drop, text_drop, audio_drop, apb_drop, lsnid_drop]):
-                melspec_spk[idx] = uncond_mel
+                audio_emb_spk[idx] = uncond_emb
             
             # all drop except apb idxs
             uncond_apb = 2*torch.ones_like(active_passive_bit[0])
@@ -791,26 +792,10 @@ class Convofusion(BaseModel):
             # text audio encode
             # breakpoint()
             # aspk, tspk, as_mask, ts_mask,token2word_map_spk,  ta_spk = self.text_audio_encoder(text_spk, melspec_spk, person_type='spk-ta')
-            aspk, tspk, as_mask, ts_mask, token2word_map_spk, _ = self.text_audio_encoder(text_spk, melspec_spk, person_type='spk', return_textmap=False)
-            alsn, tlsn, al_mask, tl_mask, token2word_map_lsn, _ = self.text_audio_encoder(text_lsn, melspec_lsn, person_type='lsn', return_textmap=False)
+            aspk = audio_emb_spk
+            alsn = audio_emb_lsn
 
-            # motion encode
-            # if self.vae_type == "no":
-            #     motion_spk_emb = motion_spk.permute(2, 0, 1)
-            # else:
-            #     motion_spk_emb, dist_spk, _ = self.vae.encode(motion_spk, lengths)
-            #     motion_spk_emb = motion_spk_emb.permute(1, 2, 0, 3)
-                
-            # motion_spk_emb = motion_spk_emb.permute(1, 2, 0)
-
-            # when motion is used as spkemb
-            # spk_emb = motion_spk_emb
-            # when spk text and audio are used as spkemb
-            # spk_emb = ta_spk
-            # when only spk text is used as spkemb
-            spk_emb = tspk
-
-            cond_emb = self.condition_fuser(spk_emb, alsn, tlsn, active_passive_bit, lsn_id)
+            cond_emb = self.condition_fuser(aspk, alsn, tlsn, active_passive_bit, lsn_id)
         else:
             raise TypeError(f"condition type {self.condition} not supported")
 
@@ -945,47 +930,10 @@ class Convofusion(BaseModel):
                 
             # breakpoint()
             # aspk, tspk, as_mask, ts_mask, token2word_map_spk, ta_spk = self.text_audio_encoder(text_spk, melspec_spk, person_type='spk-ta')
-            aspk, tspk, as_mask, ts_mask, token2word_map_spk,  _ = self.text_audio_encoder(text_spk, melspec_spk, person_type='spk', return_textmap=True)
-            alsn, tlsn, al_mask, tl_mask, token2word_map_lsn, _ = self.text_audio_encoder(text_lsn, melspec_lsn, person_type='lsn',  return_textmap=True)
+            aspk = audio_emb_spk
+            alsn = audio_emb_lsn
 
-            # breakpoint()
-
-            # WO SEMANTIC CASE:
-            # focus_words = []
-            # breakpoint()
-            text_tokenwordmap = token2word_map_lsn[bs:bs*2]
-            if len(focus_words) == 0 or len(focus_words[0]) == 0: # no focus words
-                focus_indices = []
-            else:
-                focus_indices = []
-                for b in range(len(text_tokenwordmap)):
-                    indices = []
-                    for fword in focus_words[b]:
-                        indices += [i for i, x in enumerate(text_tokenwordmap[b]) if x == fword]
-                    focus_indices.append(indices)
-            
-
-            # multiplication factors is num of modalities in modality guidance
-            e_lengths = lengths * (self.clf_guidance_drops+1) if self.do_classifier_free_guidance else lengths 
-            # if self.vae_type == "no":
-            #     motion_spk_emb = motion_spk.permute(2, 0, 1)
-            # else:
-            #     motion_spk_emb, dist_spk, _ = self.vae.encode(motion_spk, e_lengths)
-            #     motion_spk_emb = motion_spk_emb.permute(1, 2, 0, 3) # -> bs, t, bh, dim 
-
-            # motion_spk_emb = motion_spk_emb.permute(1, 2, 0) # 2, bs, 512 => bs, 512, 2
-
-            # when motion is used as spkemb
-            # spk_emb = motion_spk_emb
-
-            # when spk text and audio are used as spkemb
-            # spk_emb = ta_spk
-
-            # when only spk text is used as spkemb
-            spk_emb = tspk
-            # breakpoint()
-
-            cond_emb = self.condition_fuser(spk_emb, alsn, tlsn, active_passive_bit, lsn_id)
+            cond_emb = self.condition_fuser(aspk, alsn, tlsn, active_passive_bit, lsn_id)
         elif self.condition == 'textaudio_uncond':
             # REACT CHANGE
             text_lsn = batch["text_lsn"]
@@ -1008,10 +956,8 @@ class Convofusion(BaseModel):
             motion_spk_cond = torch.cat([torch.zeros_like(motion_spk), torch.zeros_like(motion_spk)], dim=0)
             # breakpoint()
             # aspk, tspk, as_mask, ts_mask, ta_spk = self.text_audio_encoder(text_cond, melspec_cond, person_type='spk-ta')
-            aspk, tspk, as_mask, ts_mask, _ = self.text_audio_encoder(text_cond, melspec_cond, person_type='spk', return_textmap=False)
-            alsn, tlsn, al_mask, tl_mask, _ = self.text_audio_encoder(text_cond, melspec_cond, person_type='lsn', return_textmap=False)
-            # tspk = tlsn.clone()
-            # ts_mask = tl_mask.clone()
+            aspk = audio_emb_spk
+            alsn = audio_emb_lsn
 
             e_lengths = lengths * 2
             
@@ -1027,7 +973,8 @@ class Convofusion(BaseModel):
             # when spk text and audio are used as spkemb
             # spk_emb = ta_spk
             # when only spk text is used as spkemb
-            spk_emb = tspk
+            spk_emb = aspk
+            # breakpoint()
 
             cond_emb = self.condition_fuser(spk_emb, alsn, tlsn, active_passive_cond, lsn_id)
         else:
@@ -1035,7 +982,7 @@ class Convofusion(BaseModel):
         
         # diffusion reverse
         with torch.no_grad():
-            z, att_mats = self._diffusion_reverse(cond_emb, lengths, cond_masks={'alsn': al_mask, 'tlsn': tl_mask, 'spkemb':ts_mask}, focus_indices=focus_indices)
+            z, att_mats = self._diffusion_reverse(cond_emb, lengths, cond_masks={'alsn': al_mask, 'tlsn': tl_mask, 'spkemb':ts_mask}, focus_indices=focus_words)
         # breakpoint()
         with torch.no_grad():
             if self.vae_type == "convofusion":
@@ -1057,8 +1004,8 @@ class Convofusion(BaseModel):
             # [bs, ntoken, nfeats]<= [ntoken, bs, nfeats]
             "lat_t": z.permute(1, 2, 0, 3), #-> bs, t, bh, dim 
             "test_attention_maps": att_mats,
-            "token2word_map_lsn": token2word_map_lsn,
-            "token2word_map_spk": token2word_map_spk,
+            "token2word_map_lsn": alsn,
+            "token2word_map_spk": aspk,
             "focus_words": focus_words 
         }
 

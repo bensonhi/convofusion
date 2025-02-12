@@ -37,29 +37,24 @@ def collate_fn(batch):
     notnone_batches = [b for b in batch if b is not None]
     notnone_batches.sort(key=lambda x: x[1], reverse=True)
 
-    # 
     adapted_batch = {
         "motion_spk":
         collate_tensors([torch.tensor(b[0]).float() for b in notnone_batches]),
         "length": [b[1] for b in notnone_batches],
         "motion_lsn": 
         collate_tensors([torch.tensor(b[2]).float() for b in notnone_batches]),
-        "melspec_spk":
+        "audio_emb_spk":  # Changed from melspec_spk
         collate_tensors([torch.tensor(b[3]).float() for b in notnone_batches]),
-        "melspec_lsn":
+        "audio_emb_lsn":  # Changed from melspec_lsn
         collate_tensors([torch.tensor(b[4]).float() for b in notnone_batches]),
-        "audio_spk":
-        collate_tensors([torch.tensor(b[5]).float() for b in notnone_batches]),
-        "audio_lsn":
-        collate_tensors([torch.tensor(b[6]).float() for b in notnone_batches]),
         "text_spk":
-        [b[7] for b in notnone_batches],
+        [b[5] for b in notnone_batches],
         "text_lsn":
-        [b[8] for b in notnone_batches],
+        [b[6] for b in notnone_batches],
         "active_passive_lsn":
-        [b[9] for b in notnone_batches],
+        [b[7] for b in notnone_batches],
         "name":
-        [b[10] for b in notnone_batches],
+        [b[8] for b in notnone_batches],
         "spk_name": [b[11] for b in notnone_batches],
         "lsn_name": [b[12] for b in notnone_batches],
         "lsn_id": [b[13] for b in notnone_batches],
@@ -711,14 +706,20 @@ class BEATAugReactionDataset(data.Dataset):
         # print(audio_spk.shape, [i.shape for i in audios_lsn]) 
         combined_audio = sum(audios_lsn) + audio_spk 
         # print(seg_lsn, seg_spk)
+
+        # Instead of loading and processing audio files, load pre-computed embeddings
+        audio_emb_spk = np.load(os.path.join(set_path, 'audio_spk_audio_embedding.npy'))
+        audio_emb_lsn = np.load(os.path.join(set_path, 'audio_lsn_audio_embedding.npy'))
+        
+        # Remove audio file loading and mel spectrogram computation
+        # Remove self.get_melspecs() calls
+        
         return (
             motion_spk,
             m_length,
             motion_lsn,
-            melspec_spk,
-            melspec_lsn,
-            audio_spk,
-            audio_lsn,
+            audio_emb_spk,
+            audio_emb_lsn,
             text_spk,
             text_lsn,
             active_passive_lsn,
