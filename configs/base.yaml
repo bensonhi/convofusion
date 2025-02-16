@@ -16,7 +16,7 @@ TRAIN:
     OPTIM.LR: 1e-4 # Learning rate
 
   ABLATION:
-    VAE_TYPE: 'convofusion' # vae ablation: actor or mcross
+    VAE_TYPE: 'actor' # vae ablation: actor or mcross
     VAE_ARCH: 'encoder_decoder' # mdiffusion vae architecture
     PE_TYPE: 'convofusion' # mdiffusion mld or actor
     DIFF_PE_TYPE: 'convofusion' # mdiffusion mld or actor
@@ -39,7 +39,6 @@ TEST:
   BATCH_SIZE: 1 # Testing Batch size
   NUM_WORKERS: 12 # Evaluating Batch size
   SAVE_PREDICTIONS: False # Weather to save predictions
-  REPLICATION_TIMES: 1 # Number of times to replicate evaluation metrics
 model:
   target: 'modules'
 LOSS:

@@ -39,14 +39,14 @@ class TextAudioController(nn.Module):
     def __init__(self, cfg, out_dim):
         super(TextAudioController, self).__init__()
         self.text_encoder = instantiate_from_config(cfg.model.text_encoder)
-        self.audio_encoder = instantiate_from_config(cfg.model.audio_encoder)
+        #self.audio_encoder = instantiate_from_config(cfg.model.audio_encoder)
         self.out_dim = out_dim
         
     
         self.text_time_proj = nn.Linear(self.text_encoder.text_max_length, 
                             out_dim ) 
-        self.audio_time_proj = nn.Linear(self.audio_encoder.audio_max_length,
-                            out_dim ) 
+        #self.audio_time_proj = nn.Linear(self.audio_encoder.audio_max_length,
+        #                    out_dim )
         self.out_net = nn.Linear(self.out_dim, self.out_dim)
         
 
