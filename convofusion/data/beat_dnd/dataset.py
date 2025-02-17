@@ -477,6 +477,12 @@ class BEATAugReactionDataset(data.Dataset):
 
         audio_chunk = librosa.util.normalize(audio_chunk)
         
+        # Check if embedding exists
+        embedding_path = filename.replace('.wav', f'_chunk{frame_idx}_audio_embedding.npy')
+        if os.path.exists(embedding_path):                
+            embedding = np.load(embedding_path)
+            return audio_chunk, embedding
+
         # Generate audio embedding using TensorFlow Hub model
         if not hasattr(self, 'audio_encoder'):
             import tensorflow_hub as hub
@@ -489,6 +495,12 @@ class BEATAugReactionDataset(data.Dataset):
         # Generate embedding
         embedding = self.audio_encoder(audio_for_embedding)['embedding'].numpy()
         embedding = np.squeeze(embedding)
+        
+        # Save embedding
+        try:
+            np.save(embedding_path, embedding)
+        except Exception as e:
+            print(f"Error saving embedding to {embedding_path}: {str(e)}")
         
         return audio_chunk, embedding
 
