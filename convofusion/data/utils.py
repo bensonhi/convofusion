@@ -34,36 +34,29 @@ def beatdnd_collate(batch):
         "length": [b[1] for b in notnone_batches],
         "motion_lsn": 
         collate_tensors([torch.tensor(b[2]).float() for b in notnone_batches]),
-        "melspec_spk": 
+        "audio_emb_spk":
         collate_tensors([torch.tensor(b[3]).float() for b in notnone_batches]),
-        "melspec_lsn":
+        "audio_emb_lsn":
         collate_tensors([torch.tensor(b[4]).float() for b in notnone_batches]),
-        "audio_spk":
-        collate_tensors([torch.tensor(b[5]).float() for b in notnone_batches]),
-        "audio_lsn":
-        collate_tensors([torch.tensor(b[6]).float() for b in notnone_batches]),
         "text_spk":
-        [b[7] for b in notnone_batches],
+        [b[5] for b in notnone_batches],
         "text_lsn":
-        [b[8] for b in notnone_batches],
+        [b[6] for b in notnone_batches],
         "active_passive_lsn":
-        collate_tensors([torch.tensor(b[9]).float() for b in notnone_batches]), 
+        collate_tensors([torch.tensor(b[7]).float() for b in notnone_batches]),
         "name":
-        [b[10] for b in notnone_batches],
-        "spk_name": [b[11] for b in notnone_batches],
-        "lsn_name": [b[12] for b in notnone_batches],
-        "lsn_id": [b[13] for b in notnone_batches],
-        "other_mlsn": [b[14] for b in notnone_batches],
+        [b[8] for b in notnone_batches],
+        "spk_name": [b[9] for b in notnone_batches],
+        "lsn_name": [b[10] for b in notnone_batches],
+        "lsn_id": [b[11] for b in notnone_batches],
+        "other_mlsn": [b[12] for b in notnone_batches],
         "combined_audio":
-        collate_tensors([torch.tensor(b[15]).float() for b in notnone_batches]),
-        "seg_lsn": 
-        [b[16] for b in notnone_batches],
-        "seg_spk":
-        [b[17] for b in notnone_batches],
+        collate_tensors([torch.tensor(b[13]).float() for b in notnone_batches]),
+        "seg_lsn": [b[14] for b in notnone_batches],
+        "seg_spk": [b[15] for b in notnone_batches],
         "sem_lsn":
-        collate_tensors([torch.tensor(b[18]).float() for b in notnone_batches]),
-        'sem_info': [b[19] for b in notnone_batches],
-
+        collate_tensors([torch.tensor(b[16]).float() for b in notnone_batches]),
+        "sem_info": [b[17] for b in notnone_batches],
     }
     return adapted_batch
 
