@@ -706,7 +706,6 @@ class BEATAugReactionDataset(data.Dataset):
             # print( seg_lsn, "++", seg_spk)
             # print('\n\n\n\n')
         else:
-            set_path = os.path.join(self.beat_dataset_path, set_path_name)
             seg_lsn = data['seg_lsn']
             seg_spk = data['seg_spk']
 
