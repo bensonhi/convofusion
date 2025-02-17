@@ -167,7 +167,7 @@ class BEATAugReactionDataset(data.Dataset):
 
                 text_lsn, seg_lsn = self.beat_extract_text(text_path, start_idx, self.max_motion_length)
                 # 
-                audio_lsn = self.beat_extract_audio(audio_path, start_idx, self.max_motion_length)
+                audio_lsn, audio_emb_lsn = self.beat_extract_audio(audio_path, start_idx, self.max_motion_length)
                 sem_lsn, sem_info = self.beat_extract_sem(sem_path, start_idx, self.max_motion_length)
                 # breakpoint()
 
@@ -194,6 +194,8 @@ class BEATAugReactionDataset(data.Dataset):
                     'seg_spk': "-"*10,
                     'sem_lsn': sem_lsn,
                     'sem_info': sem_info,
+                    'audio_emb_lsn': audio_emb_lsn,
+                    'audio_emb_spk': np.zeros_like(audio_lsn),
                 }
                 name_list.append('beat+' + set_name)
                 beat_names.append('beat+' + set_name)
@@ -309,6 +311,8 @@ class BEATAugReactionDataset(data.Dataset):
                     'audio_spk': audio_spk,
                     'audios_lsn': [audio_lsn1],
                     'active_passive_bit': [active_passive_bit[0]],'sem_lsn': uncond_sem,
+                    'audio_emb_spk': np.load(os.path.join(set_path, 'audio_spk_audio_embedding.npy')),
+                    'audio_emb_lsn': np.load(os.path.join(set_path, 'audio_lsn1_audio_embedding.npy')),
                 }
                 name_list.append('dnd+' + set_name + '_l1')
                 dnd_names.append('dnd+' + set_name + '_l1')
@@ -325,6 +329,8 @@ class BEATAugReactionDataset(data.Dataset):
                     'audio_spk': audio_spk,
                     'audios_lsn': [ audio_lsn2],
                     'active_passive_bit': [active_passive_bit[1]],'sem_lsn': uncond_sem,
+                    'audio_emb_spk': np.load(os.path.join(set_path, 'audio_spk_audio_embedding.npy')),
+                    'audio_emb_lsn': np.load(os.path.join(set_path, 'audio_lsn2_audio_embedding.npy')),
                 }
                 name_list.append('dnd+' + set_name + '_l2')
                 dnd_names.append('dnd+' + set_name + '_l2')
@@ -341,6 +347,8 @@ class BEATAugReactionDataset(data.Dataset):
                     'audio_spk': audio_spk,
                     'audios_lsn': [ audio_lsn3],
                     'active_passive_bit': [active_passive_bit[2]],'sem_lsn': uncond_sem,
+                    'audio_emb_spk': np.load(os.path.join(set_path, 'audio_spk_audio_embedding.npy')),
+                    'audio_emb_lsn': np.load(os.path.join(set_path, 'audio_lsn3_audio_embedding.npy')),
                 }
                 name_list.append('dnd+' + set_name + '_l3')
                 dnd_names.append('dnd+' + set_name + '_l3')
@@ -357,6 +365,8 @@ class BEATAugReactionDataset(data.Dataset):
                     'audio_spk': audio_spk,
                     'audios_lsn': [ audio_lsn4],
                     'active_passive_bit': [active_passive_bit[3]],'sem_lsn': uncond_sem,
+                    'audio_emb_spk': np.load(os.path.join(set_path, 'audio_spk_audio_embedding.npy')),
+                    'audio_emb_lsn': np.load(os.path.join(set_path, 'audio_lsn4_audio_embedding.npy')),
                 }
                 name_list.append('dnd+' + set_name + '_l4')
                 dnd_names.append('dnd+' + set_name + '_l4')
@@ -466,8 +476,22 @@ class BEATAugReactionDataset(data.Dataset):
         assert len(audio_chunk) == int(duration_sec*self.SR), 'audio chunk length: {}, duration_sec: {} filename: {}, start {}, start sr {}, window {} full len {}'.format(len(audio_chunk), duration, filename, frame_idx, int(start_sec*self.SR), audio_window_size, len(audio))
 
         audio_chunk = librosa.util.normalize(audio_chunk)
-        return audio_chunk
-    
+        
+        # Generate audio embedding using TensorFlow Hub model
+        if not hasattr(self, 'audio_encoder'):
+            import tensorflow_hub as hub
+            self.audio_encoder = hub.KerasLayer('https://tfhub.dev/google/nonsemantic-speech-benchmark/trillsson3/1')
+        
+        # Prepare audio for embedding
+        audio_for_embedding = librosa.resample(audio_chunk, orig_sr=self.SR, target_sr=16000)
+        audio_for_embedding = np.expand_dims(audio_for_embedding, axis=0)
+        
+        # Generate embedding
+        embedding = self.audio_encoder(audio_for_embedding)['embedding'].numpy()
+        embedding = np.squeeze(embedding)
+        
+        return audio_chunk, embedding
+
     # define a function to check if log db level is above threshold in a given audio and return a bool
     def check_audio(self, audio, threshold=-45):
         # if len(audio) == 0:
@@ -595,6 +619,9 @@ class BEATAugReactionDataset(data.Dataset):
         except:
             sem_info= np.array([0.] * self.max_motion_length)
 
+        audio_emb_lsn = data['audio_emb_lsn']
+        audio_emb_spk = data['audio_emb_spk']
+
         if dataset_name == 'dnd':
             # active_idx = [idx for idx, x in enumerate(active_passive_bit) if x.sum() != 0]
             # if len(active_idx) == 0:
@@ -708,9 +735,6 @@ class BEATAugReactionDataset(data.Dataset):
         combined_audio = sum(audios_lsn) + audio_spk 
         # print(seg_lsn, seg_spk)
 
-        # Instead of loading and processing audio files, load pre-computed embeddings
-        audio_emb_spk = np.load(os.path.join(set_path, 'audio_spk_audio_embedding.npy'))
-        audio_emb_lsn = np.load(os.path.join(set_path, 'audio_lsn_audio_embedding.npy'))
         
         # Remove audio file loading and mel spectrogram computation
         # Remove self.get_melspecs() calls
