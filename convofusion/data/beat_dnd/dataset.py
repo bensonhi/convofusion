@@ -195,7 +195,7 @@ class BEATAugReactionDataset(data.Dataset):
                     'sem_lsn': sem_lsn,
                     'sem_info': sem_info,
                     'audio_emb_lsn': audio_emb_lsn,
-                    'audio_emb_spk': np.zeros_like(audio_lsn),
+                    'audio_emb_spk': np.zeros_like(audio_emb_lsn),
                 }
                 name_list.append('beat+' + set_name)
                 beat_names.append('beat+' + set_name)
