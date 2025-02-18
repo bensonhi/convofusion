@@ -766,6 +766,9 @@ class Convofusion(BaseModel):
             
             # all drop except audio idxs
             uncond_emb = torch.zeros_like(audio_emb_lsn[0])
+            print(f"audio_emb_spk shape: {audio_emb_spk.shape}")
+            print(f"uncond_emb shape: {uncond_emb.shape}")
+            print(f"audio_emb_lsn shape: {audio_emb_lsn.shape}")
             for idx in np.concatenate([all_drop, text_drop, spk_drop, apb_drop, lsnid_drop]):
                 audio_emb_lsn[idx] = uncond_emb
             
