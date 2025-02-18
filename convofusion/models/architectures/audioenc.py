@@ -61,12 +61,6 @@ class TextAudioController(nn.Module):
 
         text_mask = ~text_mask
 
-        audio_emb = self.audio_encoder(audio)
-        audio_mask = None
-        if audio_mask is not None:
-            audio_masked = audio_emb * audio_mask.int().unsqueeze(-1)
-        else:
-            audio_masked = audio_emb
         # breakpoint()
         if person_type == "spk-ta":
             if text_mask is not None:
@@ -89,7 +83,7 @@ class TextAudioController(nn.Module):
             # out = self.pos_emb(out)
             return audio_emb, text_emb, audio_mask, text_mask, token2word_map, ta_fused 
         else:
-            return audio_emb, text_emb, audio_mask, text_mask, token2word_map, None
+            return None, text_emb, None, text_mask, token2word_map, None
 
 
 if __name__ == "__main__":
