@@ -797,6 +797,8 @@ class Convofusion(BaseModel):
             # aspk, tspk, as_mask, ts_mask,token2word_map_spk,  ta_spk = self.text_audio_encoder(text_spk, melspec_spk, person_type='spk-ta')
             aspk = audio_emb_spk
             alsn = audio_emb_lsn
+            _, tlsn, _, tl_mask = self.text_audio_encoder(text_lsn, None, person_type='lsn')
+
 
             cond_emb = self.condition_fuser(aspk, alsn, tlsn, active_passive_bit, lsn_id)
         else:
