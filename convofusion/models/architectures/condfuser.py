@@ -36,8 +36,7 @@ class TextAudioMotionFuser(nn.Module):
         motion_latent: (batch_size, latent_dim0, latent_dim1)
         active_passive_bit: (batch_size,)
         """
-        
-        bs, seqlen, _ = alsn.shape
+
         # 
         active_passive_bit = active_passive_bit.to(torch.int)
 
