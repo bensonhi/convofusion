@@ -34,7 +34,7 @@ class Denoiser(nn.Module):
                  guidance_scale: float = 7.5,
                  guidance_uncondp: float = 0.1,
                  text_encoded_dim: int = 768, 
-                 audio_encoded_dim: int = 1024,
+                 audio_encoded_dim: int = 512,
                  nclasses: int = 10,
                  **kwargs) -> None:
 
@@ -169,6 +169,9 @@ class Denoiser(nn.Module):
             )
         else:
             raise ValueError(f"Not supported architechure{self.arch}!")
+
+        # Add projection layer for audio embeddings
+        self.audio_proj = nn.Linear(1024, audio_encoded_dim)  # Project from 1024 to 512
 
     def forward(self,
                 sample,
