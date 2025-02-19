@@ -481,6 +481,7 @@ class BEATAugReactionDataset(data.Dataset):
         embedding_path = filename.replace('.wav', f'_chunk{frame_idx}_audio_embedding.npy')
         if os.path.exists(embedding_path):                
             embedding = np.load(embedding_path)
+            embedding = np.expand_dims(embedding, axis=0)
             return audio_chunk, embedding
 
         # Generate audio embedding using TensorFlow Hub model
