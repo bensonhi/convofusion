@@ -174,8 +174,6 @@ class Denoiser(nn.Module):
             raise ValueError(f"Not supported architechure{self.arch}!")
 
 
-        print("aksjdf;ljslkadjl;kfjdsa;lkfjasl;kdjflk;asdjfklajsd;lkdafjlkfdsa")
-        print(audio_encoded_dim)
         # Add in __init__
         self.time_to_audio_proj = nn.Linear(text_encoded_dim, audio_encoded_dim)
 
