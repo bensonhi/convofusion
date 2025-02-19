@@ -124,13 +124,10 @@ class BEATAugReactionDataset(data.Dataset):
 
         beat_names = []
 
-        leave=0
 
         print("Loading BEAT dataset from {}".format(beat_dataset_path))
         print(self.beat_split_file)
         for motion_path in tqdm(self.beat_motion_paths):
-            if(leave>10):
-                break
             motion_name = os.path.basename(motion_path).replace('.npy', '')
             if motion_name not in self.beat_split:
                 continue
@@ -165,7 +162,6 @@ class BEATAugReactionDataset(data.Dataset):
             
             # breakpoint()
             for idx, chunk in enumerate(motion_chunks):
-                leave+=1
                 start_idx = idx * self.max_motion_length
                 motion_lsn = chunk
 
