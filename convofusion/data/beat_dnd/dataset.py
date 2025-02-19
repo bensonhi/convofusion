@@ -43,10 +43,10 @@ def collate_fn(batch):
         "length": [b[1] for b in notnone_batches],
         "motion_lsn": 
         collate_tensors([torch.tensor(b[2]).float() for b in notnone_batches]),
-        "audio_emb_spk":  # Changed from melspec_spk
-        collate_tensors([torch.tensor(b[3]).float() for b in notnone_batches]),
-        "audio_emb_lsn":  # Changed from melspec_lsn
-        collate_tensors([torch.tensor(b[4]).float() for b in notnone_batches]),
+        "audio_emb_spk":  
+        collate_tensors([torch.tensor(b[3]).float().unsqueeze(0) for b in notnone_batches]),
+        "audio_emb_lsn":  
+        collate_tensors([torch.tensor(b[4]).float().unsqueeze(0) for b in notnone_batches]),
         "text_spk":
         [b[5] for b in notnone_batches],
         "text_lsn":
