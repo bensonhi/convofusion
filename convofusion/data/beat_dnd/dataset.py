@@ -116,7 +116,7 @@ class BEATAugReactionDataset(data.Dataset):
             self.beat_split = self.beat_split[:10]
         if tiny:
             self.beat_split = self.beat_split[:5]
-        self.beat_split = self.beat_split[:5]
+        self.beat_split = self.beat_split[:100]
         # self.beat_split = self.beat_split[:10]
         self.beat_motion_paths.sort()
         if self.dataset_select == 'dnd':
