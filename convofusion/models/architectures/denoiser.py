@@ -369,8 +369,13 @@ class Denoiser(nn.Module):
             if mem_mask_dict:
                 for key in mem_mask_dict:
                     if mem_mask_dict[key] is not None:
-                        # Expand mask to match memory sequence length
-                        mem_mask_dict[key] = mem_mask_dict[key].expand(bs, 1)
+                        # Keep the sequence length dimension intact
+                        if key == 'alsn':
+                            mem_mask_dict[key] = mem_mask_dict[key][:, :alsn.shape[0]]
+                        elif key == 'tlsn':
+                            mem_mask_dict[key] = mem_mask_dict[key][:, :tlsn.shape[0]]
+                        elif key == 'spkemb':
+                            mem_mask_dict[key] = mem_mask_dict[key][:, :spk_emb.shape[0]]
             
             sample, att_mats = self.decoder(tgt=sample, 
                                             memory=[spk_emb, alsn, tlsn, apb, lsnemb], 
