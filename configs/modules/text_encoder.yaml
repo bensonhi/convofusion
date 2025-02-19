@@ -4,5 +4,5 @@ text_encoder:
   params:
     finetune: false # if false, model weights are frozen
     last_hidden_state: false # if true, the last hidden state is used as the text embedding
-    latent_dim: 512
+    latent_dim: 1024
     modelpath: ${model.t5_path}
