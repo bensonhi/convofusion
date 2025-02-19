@@ -34,7 +34,7 @@ class Denoiser(nn.Module):
                  guidance_scale: float = 7.5,
                  guidance_uncondp: float = 0.1,
                  text_encoded_dim: int = 768, 
-                 audio_encoded_dim: int = 512,
+                 audio_encoded_dim: int = 1024,
                  nclasses: int = 10,
                  **kwargs) -> None:
 
