@@ -171,6 +171,10 @@ class Denoiser(nn.Module):
             raise ValueError(f"Not supported architechure{self.arch}!")
 
 
+        print("aksjdf;ljslkadjl;kfjdsa;lkfjasl;kdjflk;asdjfklajsd;lkdafjlkfdsa")
+        print(audio_encoded_dim)
+        # Add in __init__
+        self.time_to_audio_proj = nn.Linear(text_encoded_dim, audio_encoded_dim)
 
     def forward(self,
                 sample,
@@ -256,16 +260,18 @@ class Denoiser(nn.Module):
                 # tspk = time_emb + tspk
                 tlsn = time_emb + tlsn
                 # aspk = time_emb + aspk
-                alsn = time_emb + alsn
-                spk_emb = time_emb + spk_emb
+                audio_time_emb = self.time_to_audio_proj(time_emb)
+                alsn = audio_time_emb + alsn
+                spk_emb = audio_time_emb + spk_emb
                 apb = time_emb + apb
                 lsnemb = time_emb + lsnemb
             else:
                 # tspk = torch.cat((time_emb, tspk), 0)
                 tlsn = torch.cat((time_emb, tlsn), 0)
                 # aspk = torch.cat((time_emb, aspk), 0)
-                alsn = torch.cat((time_emb, alsn), 0)
-                spk_emb = torch.cat((time_emb, spk_emb), 0)
+                audio_time_emb = self.time_to_audio_proj(time_emb)
+                alsn = torch.cat((audio_time_emb, alsn), 0)
+                spk_emb = torch.cat((audio_time_emb, spk_emb), 0)
                 apb = torch.cat((time_emb, apb), 0)
                 lsnemb = torch.cat((time_emb, lsnemb), 0)
                 
