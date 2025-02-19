@@ -365,8 +365,13 @@ class Denoiser(nn.Module):
             # mspk[1::2] = mspk[1::2] + hand_idxs
             # mspk = self.mem_mpsk_pos(mspk)
             # breakpoint()
-            # sample, att_mats = self.decoder(tgt=sample, memory=[mspk, aspk, tspk, alsn, tlsn, apb, lsnemb])
-            # breakpoint()
+            # Adjust masks to correct dimensions
+            if mem_mask_dict:
+                for key in mem_mask_dict:
+                    if mem_mask_dict[key] is not None:
+                        # Expand mask to match memory sequence length
+                        mem_mask_dict[key] = mem_mask_dict[key].expand(bs, 1)
+            
             sample, att_mats = self.decoder(tgt=sample, 
                                             memory=[spk_emb, alsn, tlsn, apb, lsnemb], 
                                             cond_params=self.cond_params, 
