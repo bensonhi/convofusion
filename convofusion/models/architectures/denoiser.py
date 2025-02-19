@@ -123,7 +123,10 @@ class Denoiser(nn.Module):
             raise ValueError("Not Support PE type")
 
         self.bh_embedding = nn.Embedding(2, text_encoded_dim)
-        self.condition_embedding = nn.Embedding(5, text_encoded_dim)
+        if self.condition in ["text+audio", "textaudio_uncond"]:
+            self.condition_embedding = nn.Embedding(5, audio_encoded_dim)
+        else:
+            self.condition_embedding = nn.Embedding(5, text_encoded_dim)
         
 
         if self.arch == "trans_enc":
