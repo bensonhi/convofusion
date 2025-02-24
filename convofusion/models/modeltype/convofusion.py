@@ -917,13 +917,8 @@ class Convofusion(BaseModel):
                 text_lsn = ['-'*10] * len(text_lsn) + text_lsn + ['-'*10] * len(text_lsn) + ['-'*10] * len(text_lsn) + ['-'*10] * len(text_lsn) + ['-'*10] * len(text_lsn) + text_lsn
 
                 # custom uncond mel for audio drop
-                uncond_mel = -90 * torch.ones_like(melspec_lsn)
                 uncond_mel[..., 40:45] = 0
-                melspec_lsn = torch.cat([uncond_mel, uncond_mel, melspec_lsn, uncond_mel, uncond_mel, uncond_mel, melspec_lsn], dim=0) # audio (bs*2, 128, 80)
-
                 text_spk = ['-'*10] * len(text_spk) + ['-'*10] * len(text_spk) + ['-'*10] * len(text_spk) + text_spk + ['-'*10] * len(text_spk) + ['-'*10] * len(text_spk) + text_spk
-                melspec_spk = torch.cat([uncond_mel, uncond_mel, uncond_mel, melspec_spk, uncond_mel, uncond_mel, melspec_spk], dim=0) # audio (bs*2, 128, 80)
-
                 active_passive_bit = torch.cat([2*torch.ones_like(active_passive_bit), # here 2 is used to represent uncond tokens
                                                 2*torch.ones_like(active_passive_bit),
                                                 2*torch.ones_like(active_passive_bit),
