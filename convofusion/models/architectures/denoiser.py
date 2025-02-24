@@ -199,11 +199,16 @@ class Denoiser(nn.Module):
 
         # 1. time_embedding
         # broadcast to batch dimension in a way that's compatible with ONNX/Core ML
+        print(sample)
         timesteps = timestep.expand(sample.shape[1]).clone()
+        print(timesteps)
         time_emb = self.time_proj(timesteps)
+        print(time_emb)
         time_emb = time_emb.to(dtype=sample.dtype)
+        print(time_emb)
         # [1, bs, latent_dim] <= [bs, latent_dim]
         time_emb = self.time_embedding(time_emb).unsqueeze(0)
+        print(time_emb)
 
         # 2. condition + time embedding
         # breakpoint()
