@@ -396,10 +396,14 @@ class Convofusion(BaseModel):
         scale_range = self.weg_parameters['scale_range']
         thresholds = self.weg_parameters['thresholds']
 
+        print('!!!!!!!!!!!!!!!!!!!!!!!!!!')
         bsz = encoder_hidden_states[0].shape[0]
         if self.do_classifier_free_guidance:
             guidance_bs_mulitplier = self.clf_guidance_drops + 1
+            print(bsz)
+            print(guidance_bs_mulitplier)
             bsz = bsz // guidance_bs_mulitplier
+            print(bsz)
         
         if self.vae_type == "no":
             assert lengths is not None, "no vae (diffusion only) need lengths for diffusion" # this is not latent diffusion its simple diffusion
