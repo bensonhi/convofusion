@@ -261,8 +261,10 @@ class Denoiser(nn.Module):
             #     alsn = alsn
 
             # breakpoint()
-            guidance_bs_multiplier = len(encoder_hidden_states[0]) // sample.shape[1]
-            time_emb = time_emb.repeat(1, guidance_bs_multiplier, 1)
+            # Calculate multiplier based on tlsn's batch dimension after permute
+            guidance_bs_multiplier = tlsn.shape[1] // sample.shape[1]
+            if guidance_bs_multiplier > 1:  # Only repeat if necessary
+                time_emb = time_emb.repeat(1, guidance_bs_multiplier, 1)
 
             if self.abl_plus:
                 # Add before the addition
