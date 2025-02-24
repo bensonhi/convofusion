@@ -262,6 +262,10 @@ class Denoiser(nn.Module):
 
             # breakpoint()
             if self.abl_plus:
+                # Add before the addition
+                if time_emb.shape[1] != tlsn.shape[1]:
+                    # Expand time_emb to match tlsn's batch dimension
+                    time_emb = time_emb.expand(-1, tlsn.shape[1], -1)
                 tlsn = time_emb + tlsn
                 # aspk = time_emb + aspk
                 audio_time_emb = self.time_to_audio_proj(time_emb)
