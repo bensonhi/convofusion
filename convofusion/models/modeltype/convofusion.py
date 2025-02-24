@@ -748,9 +748,9 @@ class Convofusion(BaseModel):
             active_passive_bit = batch["active_passive_lsn"].clone()
             motion_spk = batch["motion_spk"]
             lsn_id = batch["lsn_id"]
-            
+
             # modality guidance: randomly drop modalities during training
-            # 
+            #
             num_guidance_drops = self.clf_guidance_drops
             drop_idxs = np.array_split(
                 np.random.choice(a=len(text_lsn),
@@ -763,7 +763,7 @@ class Convofusion(BaseModel):
             # all_drop except text idxs
             for idx in np.concatenate([all_drop, audio_drop, spk_drop, apb_drop, lsnid_drop]):
                 text_lsn[idx] = '-'*10
-            
+
             # all drop except audio idxs
             uncond_emb = torch.zeros_like(audio_emb_lsn[0])
             print(f"audio_emb_spk shape: {audio_emb_spk.shape}")
@@ -771,17 +771,17 @@ class Convofusion(BaseModel):
             print(f"audio_emb_lsn shape: {audio_emb_lsn.shape}")
             for idx in np.concatenate([all_drop, text_drop, spk_drop, apb_drop, lsnid_drop]):
                 audio_emb_lsn[idx] = uncond_emb
-            
+
             for idx in np.concatenate([all_drop, text_drop, audio_drop, apb_drop, lsnid_drop]):
                 audio_emb_spk[idx] = uncond_emb
-            
+
             # all drop except spk idxs
             for idx in np.concatenate([all_drop, text_drop, audio_drop, apb_drop, lsnid_drop]):
                 text_spk[idx] = '-'*10
 
             for idx in np.concatenate([all_drop, text_drop, audio_drop, apb_drop, lsnid_drop]):
                 audio_emb_spk[idx] = uncond_emb
-            
+
             # all drop except apb idxs
             uncond_apb = 2*torch.ones_like(active_passive_bit[0])
             for idx in np.concatenate([all_drop, text_drop, audio_drop, spk_drop, lsnid_drop]):
@@ -790,8 +790,8 @@ class Convofusion(BaseModel):
             # all drop except lsnid idxs
             for idx in np.concatenate([all_drop, text_drop, audio_drop, spk_drop, apb_drop]):
                 lsn_id[idx] = 0
-            
-            
+
+
             # text audio encode
             # breakpoint()
             # aspk, tspk, as_mask, ts_mask,token2word_map_spk,  ta_spk = self.text_audio_encoder(text_spk, melspec_spk, person_type='spk-ta')
@@ -809,7 +809,7 @@ class Convofusion(BaseModel):
         # breakpoint()
         # z_timeavg = (z[:, 1:, :, :] + z[:, :-1, :, :]) / 2 # HARD CODED - changed for ikhsi's idea
         # z = torch.cat([z, z_timeavg], dim=1) # HARD CODED - changed for ikhsi's idea
-        
+
         n_set = self._diffusion_process(z, cond_emb, lengths, drop_idxs=None, cond_masks={'alsn': al_mask, 'tlsn': tl_mask, 'spkemb':ts_mask})
         # n_set['dist_m1'] = dist
         return {**n_set}
@@ -863,9 +863,9 @@ class Convofusion(BaseModel):
 
 
             # RANDOMLY SELECT FOCUS WORDS
-            
+
             if self.WEG_type == 'semantic':
-                # utilize semantic information to select focus words from BEAT dataset 
+                # utilize semantic information to select focus words from BEAT dataset
                 # breakpoint()
                 #assert self.datamodule._sample_set.dataset_select == 'beat', "Semantic WEG only supported for BEAT dataset"
                 try:
@@ -884,13 +884,13 @@ class Convofusion(BaseModel):
                         fwords = [tag[0] for tag in pos_tag if 'NN' in tag[1] or 'VB' in tag[1] or 'IN' in tag[1]]
                     if len(fwords) == 0:
                         fwords = []
-                    
+
                     # if more than 3 focus words, then randomly select 3
                     if len(fwords) > 3:
                         fwords = random.sample(fwords, 3)
 
                     focus_words.append(fwords)
-                
+
                 # focus on three word window (a phrase) around the focus word instead of one word
                 # completely optional (comment out if not needed)
                 if len(focus_words) == 0:
@@ -900,7 +900,7 @@ class Convofusion(BaseModel):
                     for token, focus_word in zip(text_tokenized, focus_words):
                         if len(focus_word) == 0:
                             continue
-                        word = random.sample(focus_word, 1)[0] #focus_word[len(focus_word)//2 - 1] 
+                        word = random.sample(focus_word, 1)[0] #focus_word[len(focus_word)//2 - 1]
                         idx = token.index(word)
                         phrase = token[idx-1:idx+2] if idx > 0 else token[idx:idx+2]
                         phrases.append(phrase)
@@ -908,15 +908,16 @@ class Convofusion(BaseModel):
                 focus_words = phrases
             elif self.WEG_type == 'no': # no WEG case
                 focus_words = []
-            
+
             print("focus words: ", focus_words)
 
-            
+
             if self.do_classifier_free_guidance: # modality guidance
                 # drop sequence: all_drop, text_drop, audio_drop, spk_drop, apb_drop, lsnid_drop, no_drop
                 text_lsn = ['-'*10] * len(text_lsn) + text_lsn + ['-'*10] * len(text_lsn) + ['-'*10] * len(text_lsn) + ['-'*10] * len(text_lsn) + ['-'*10] * len(text_lsn) + text_lsn
 
                 # custom uncond mel for audio drop
+                uncond_mel[..., 40:45] = 0
                 text_spk = ['-'*10] * len(text_spk) + ['-'*10] * len(text_spk) + ['-'*10] * len(text_spk) + text_spk + ['-'*10] * len(text_spk) + ['-'*10] * len(text_spk) + text_spk
                 active_passive_bit = torch.cat([2*torch.ones_like(active_passive_bit), # here 2 is used to represent uncond tokens
                                                 2*torch.ones_like(active_passive_bit),
@@ -925,11 +926,13 @@ class Convofusion(BaseModel):
                                                 active_passive_bit,
                                                 2*torch.ones_like(active_passive_bit),
                                                 active_passive_bit], dim=0)
-                
-                lsn_id = [0] * len(lsn_id) + [0] * len(lsn_id) + [0] * len(lsn_id) + [0] * len(lsn_id) + [0] * len(lsn_id) + lsn_id + lsn_id 
-                
+
+                lsn_id = [0] * len(lsn_id) + [0] * len(lsn_id) + [0] * len(lsn_id) + [0] * len(lsn_id) + [0] * len(lsn_id) + lsn_id + lsn_id
+
             # breakpoint()
             # aspk, tspk, as_mask, ts_mask, token2word_map_spk, ta_spk = self.text_audio_encoder(text_spk, melspec_spk, person_type='spk-ta')
+            _, tspk, as_mask, ts_mask, token2word_map_spk, _ = self.text_audio_encoder(text_spk, None,person_type='spk',return_textmap=False)
+            _, tlsn, al_mask, tl_mask, token2word_map_lsn, _ = self.text_audio_encoder(text_lsn, None,person_type='lsn',return_textmap=False)
             aspk = audio_emb_spk
             alsn = audio_emb_lsn
 
@@ -960,12 +963,12 @@ class Convofusion(BaseModel):
             alsn = audio_emb_lsn
 
             e_lengths = lengths * 2
-            
+
             # if self.vae_type == "no":
             #     motion_spk_emb = motion_spk_cond.permute(2, 0, 1)
             # else:
             #     motion_spk_emb, dist_spk, _ = self.vae.encode(motion_spk_cond, e_lengths)
-            #     motion_spk_emb = motion_spk_emb.permute(1, 2, 0, 3) # -> bs, t, bh, dim 
+            #     motion_spk_emb = motion_spk_emb.permute(1, 2, 0, 3) # -> bs, t, bh, dim
             # motion_spk_emb = motion_spk_emb.permute(1, 2, 0)
 
             # when motion is used as spkemb
@@ -979,7 +982,7 @@ class Convofusion(BaseModel):
             cond_emb = self.condition_fuser(spk_emb, alsn, tlsn, active_passive_cond, lsn_id)
         else:
             raise TypeError(f"condition type {self.condition} not supported")
-        
+
         # diffusion reverse
         with torch.no_grad():
             z, att_mats = self._diffusion_reverse(cond_emb, lengths, cond_masks={'alsn': al_mask, 'tlsn': tl_mask, 'spkemb':ts_mask}, focus_indices=focus_words)
@@ -988,21 +991,21 @@ class Convofusion(BaseModel):
             if self.vae_type == "convofusion":
                 ntokens, bs, dim = z.shape
                 z = z.reshape(ntokens//2 , 2, bs, dim) # t, bh, bs, dim
-                # 
+                #
                 z = z.permute(1, 2, 0, 3) # bh, bs, t, dim
-                
+
                 feats_rst = self.vae.decode(z, lengths)
             elif self.vae_type == "no":
                 feats_rst = z.permute(1, 0, 2)
             else:
                 raise TypeError("vae_type must be convofusion or no")
 
-        # 
+        #
         rs_set = {
             "m_rst": feats_rst,
             "m_ref": batch["motion_lsn"].detach(), # feats_ref
             # [bs, ntoken, nfeats]<= [ntoken, bs, nfeats]
-            "lat_t": z.permute(1, 2, 0, 3), #-> bs, t, bh, dim 
+            "lat_t": z.permute(1, 2, 0, 3), #-> bs, t, bh, dim
             "test_attention_maps": att_mats,
             "token2word_map_lsn": alsn,
             "token2word_map_spk": aspk,
