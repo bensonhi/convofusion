@@ -261,11 +261,15 @@ class Denoiser(nn.Module):
             #     alsn = alsn
 
             # breakpoint()
+            if self.do_classifier_free_guidance:
+                # Get the correct batch size after chunking
+                guidance_bs_multiplier = len(encoder_hidden_states[0]) // sample.shape[1]
+                time_emb = time_emb.repeat(1, guidance_bs_multiplier, 1)
+            else:
+                time_emb = time_emb.expand(-1, tlsn.shape[1], -1)
+
             if self.abl_plus:
                 # Add before the addition
-                if time_emb.shape[1] != tlsn.shape[1]:
-                    # Expand time_emb to match tlsn's batch dimension
-                    time_emb = time_emb.expand(-1, tlsn.shape[1], -1)
                 tlsn = time_emb + tlsn
                 # aspk = time_emb + aspk
                 audio_time_emb = self.time_to_audio_proj(time_emb)
