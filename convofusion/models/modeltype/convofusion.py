@@ -846,8 +846,8 @@ class Convofusion(BaseModel):
             text_lsn = batch["text_lsn"].copy()
             text_spk = batch["text_spk"].copy()
             # audio = batch["audio"]
-            melspec_spk = batch["melspec_spk"].clone()
-            melspec_lsn = batch["melspec_lsn"].clone()
+            audio_emb_spk = batch["audio_emb_spk"].clone()
+            audio_emb_lsn = batch["audio_emb_lsn"].clone()
             active_passive_bit = batch["active_passive_lsn"].clone()
             motion_spk = batch["motion_spk"].clone()
 
