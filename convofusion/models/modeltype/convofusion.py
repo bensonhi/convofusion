@@ -1036,8 +1036,10 @@ class Convofusion(BaseModel):
             # [bs, ntoken, nfeats]<= [ntoken, bs, nfeats]
             "lat_t": z.permute(1, 2, 0, 3), #-> bs, t, bh, dim
             "test_attention_maps": att_mats,
-            "token2word_map_lsn": alsn,
-            "token2word_map_spk": aspk,
+            "token2word_map": {
+                "lsn": token2word_map_lsn[-len(text_lsn):] if token2word_map_lsn is not None else [],
+                "spk": token2word_map_spk[-len(text_lsn):] if token2word_map_spk is not None else []
+            },
             "focus_words": focus_words 
         }
 
@@ -1142,8 +1144,10 @@ class Convofusion(BaseModel):
                             "lat_rm": t2m_rs_set["lat_rm"],
                             "test_attention_maps": t2m_rs_set["test_attention_maps"],
                             "cond_params": self.denoiser.cond_params,
-                            "token2word_map_lsn": t2m_rs_set["token2word_map_lsn"],
-                            "token2word_map_spk": t2m_rs_set["token2word_map_spk"],
+                            "token2word_map": {
+                                "lsn": t2m_rs_set["token2word_map_lsn"][-len(text_lsn):] if t2m_rs_set["token2word_map_lsn"] is not None else [],
+                                "spk": t2m_rs_set["token2word_map_spk"][-len(text_lsn):] if t2m_rs_set["token2word_map_spk"] is not None else []
+                            },
                             "focus_words": t2m_rs_set["focus_words"]
                         }
                         # loss = self.losses[split].update(rs_set)
@@ -1224,7 +1228,7 @@ class Convofusion(BaseModel):
                             melspec_lsn,
                             other_mlsn,
                             full_comb_audio,
-                            dict(lsn=rs_set["token2word_map_lsn"][-len(text_lsn):], spk=rs_set["token2word_map_spk"][-len(text_lsn):]),
+                            rs_set["token2word_map"],
                             rs_set["focus_words"],
                             semantic,
                             sem_info_lsn
