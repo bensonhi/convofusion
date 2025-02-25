@@ -403,6 +403,8 @@ class Convofusion(BaseModel):
             print(bsz)
             print(guidance_bs_mulitplier)
             bsz = bsz // guidance_bs_mulitplier
+            if(bsz==0):
+                bsz=1
             print(bsz)
         
         if self.vae_type == "no":
