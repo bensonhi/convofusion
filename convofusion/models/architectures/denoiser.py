@@ -373,7 +373,7 @@ class Denoiser(nn.Module):
                 for key in mem_mask_dict:
                     if mem_mask_dict[key] is not None:
                         if key == 'spkemb':
-                            mem_mask_dict[key] = torch.zeros((0, spk_emb.shape[1]),
+                            mem_mask_dict[key] = torch.zeros((sample.shape[1], 1),
                                                              dtype=torch.bool,
                                                              device=spk_emb.device)
                         elif key == 'alsn':
