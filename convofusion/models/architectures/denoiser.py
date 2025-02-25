@@ -197,18 +197,40 @@ class Denoiser(nn.Module):
         if lengths not in [None, []]:
             mask = lengths_to_mask(lengths, sample.device)
 
+        # After permuting the tensors but before time embedding
+        base_batch_size = sample.shape[1]  # This is our target batch size
+        
+        # Normalize batch sizes
+        spk_emb, alsn, tlsn, apb, lsnemb = encoder_hidden_states
+        
+        # Helper function to adjust batch size
+        def adjust_batch(tensor, target_size):
+            if tensor.shape[1] > target_size:
+                # If larger, take first target_size batches
+                return tensor[:, :target_size, :]
+            elif tensor.shape[1] < target_size:
+                # If smaller, repeat to match size
+                repeats = target_size // tensor.shape[1] + 1
+                tensor = tensor.repeat(1, repeats, 1)
+                return tensor[:, :target_size, :]
+            return tensor
+        
+        # Adjust all tensors to match base_batch_size
+        spk_emb = adjust_batch(spk_emb, base_batch_size)
+        alsn = adjust_batch(alsn, base_batch_size)
+        tlsn = adjust_batch(tlsn, base_batch_size)
+        apb = adjust_batch(apb, base_batch_size)
+        lsnemb = adjust_batch(lsnemb, base_batch_size)
+        
+        encoder_hidden_states = [spk_emb, alsn, tlsn, apb, lsnemb]
+
         # 1. time_embedding
         # broadcast to batch dimension in a way that's compatible with ONNX/Core ML
-        print(sample)
         timesteps = timestep.expand(sample.shape[1]).clone()
-        print(timesteps)
         time_emb = self.time_proj(timesteps)
-        print(time_emb)
         time_emb = time_emb.to(dtype=sample.dtype)
-        print(time_emb)
         # [1, bs, latent_dim] <= [bs, latent_dim]
         time_emb = self.time_embedding(time_emb).unsqueeze(0)
-        print(time_emb)
 
         # 2. condition + time embedding
         # breakpoint()
@@ -261,17 +283,12 @@ class Denoiser(nn.Module):
             #     alsn = alsn
 
             # breakpoint()
-            # Calculate multiplier based on tlsn's batch dimension after permute
-            guidance_bs_multiplier = tlsn.shape[1] // sample.shape[1]
-            if guidance_bs_multiplier > 1:  # Only repeat if necessary
-                time_emb = time_emb.repeat(1, guidance_bs_multiplier, 1)
 
             if self.abl_plus:
                 # Add before the addition
                 tlsn = time_emb + tlsn
                 # aspk = time_emb + aspk
                 audio_time_emb = self.time_to_audio_proj(time_emb)
-                audio_time_emb=audio_time_emb[:,:alsn.shape[1],:]
                 alsn = audio_time_emb + alsn
                 spk_emb = audio_time_emb + spk_emb
                 apb = time_emb + apb
