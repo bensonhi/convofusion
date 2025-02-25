@@ -188,8 +188,6 @@ class Denoiser(nn.Module):
         # sample [latent_dim[0], batch_size, latent_dim] <= [batch_size, latent_dim[0], latent_dim[1]]
         # breakpoint()
         sample = sample.permute(1, 0, 2) # ntokens(8*2), bs, dim
-        print('?????????s')
-        print(sample.shape)
 
         # breakpoint()
         if not self.diffusion_only:
