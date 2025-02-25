@@ -371,27 +371,17 @@ class Denoiser(nn.Module):
                 for key in mem_mask_dict:
                     if mem_mask_dict[key] is not None:
                         if key == 'spkemb':
-                            # If spkemb has no sequence dimension, create empty mask with correct shape
-                            if spk_emb.shape[0] == 1:  # single token
-                                mem_mask_dict[key] = torch.zeros((spk_emb.shape[1], 1), 
-                                                               dtype=torch.bool,
-                                                               device=spk_emb.device)
-                            else:
-                                mem_mask_dict[key] = mem_mask_dict[key][:, :spk_emb.shape[0]]
+                            mem_mask_dict[key] = torch.zeros((0, spk_emb.shape[0]), 
+                                                           dtype=torch.bool,
+                                                           device=spk_emb.device)
                         elif key == 'alsn':
-                            if alsn.shape[0] == 1:
-                                mem_mask_dict[key] = torch.zeros((0, alsn.shape[0]), 
-                                                               dtype=torch.bool,
-                                                               device=alsn.device)
-                            else:
-                                mem_mask_dict[key] = mem_mask_dict[key][:, :alsn.shape[0]]
+                            mem_mask_dict[key] = torch.zeros((0, alsn.shape[0]), 
+                                                           dtype=torch.bool,
+                                                           device=alsn.device)
                         elif key == 'tlsn':
-                            if tlsn.shape[0] == 1:
-                                mem_mask_dict[key] = torch.zeros((0, tlsn.shape[0]), 
-                                                               dtype=torch.bool,
-                                                               device=tlsn.device)
-                            else:
-                                mem_mask_dict[key] = mem_mask_dict[key][:, :tlsn.shape[0]]
+                            mem_mask_dict[key] = torch.zeros((0, tlsn.shape[0]), 
+                                                           dtype=torch.bool,
+                                                           device=tlsn.device)
             
             sample, att_mats = self.decoder(tgt=sample, 
                                             memory=[spk_emb, alsn, tlsn, apb, lsnemb], 
