@@ -482,7 +482,13 @@ class Convofusion(BaseModel):
                     ) #[0]
                     self.denoiser.zero_grad()
                     # breakpoint()
-                    eot_indices = torch.argmax(text_only_cond_masks['tlsn'].int(),  dim=1) - 1
+                    # Before getting eot_indices, ensure we have valid True values
+                    if torch.any(text_only_cond_masks['tlsn']):
+                        eot_indices = torch.argmax(text_only_cond_masks['tlsn'].int(), dim=1) - 1
+                    else:
+                        # If no True values, use the last position
+                        eot_indices = torch.tensor([text_only_cond_masks['tlsn'].shape[1] - 1], 
+                                                  device=text_only_cond_masks['tlsn'].device)
 
                     # text_only_att_mats = [att_mat.chunk(guidance_bs_mulitplier)[1] for att_mat in att_mats]
                     # check the shapes of the attention matrices
