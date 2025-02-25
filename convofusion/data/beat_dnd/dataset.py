@@ -55,10 +55,10 @@ def collate_fn(batch):
         [b[7] for b in notnone_batches],
         "name":
         [b[8] for b in notnone_batches],
-        "spk_name": [b[11] for b in notnone_batches],
-        "lsn_name": [b[12] for b in notnone_batches],
-        "lsn_id": [b[13] for b in notnone_batches],
-        "melspec_lsn": [b[20] for b in notnone_batches],
+        "spk_name": [b[9] for b in notnone_batches],
+        "lsn_name": [b[10] for b in notnone_batches],
+        "lsn_id": [b[11] for b in notnone_batches],
+        "melspec_lsn": [b[18] for b in notnone_batches],
     }
     return adapted_batch
 
