@@ -227,6 +227,17 @@ class Denoiser(nn.Module):
             # spk_emb, aspk, tspk, alsn, tlsn, apb, lsnemb = encoder_hidden_states
             spk_emb, alsn, tlsn, apb, lsnemb = encoder_hidden_states
 
+            # breakpoint()
+            spk_emb = spk_emb.permute(1, 0, 2) # lat1, bs, lat0
+            # aspk = aspk.permute(1, 0, 2) # seq_len, bs, enc_dim
+            # tspk = tspk.permute(1, 0, 2) # seq_len, bs, enc_dim
+            alsn = alsn.permute(1, 0, 2) # seq_len, bs, enc_dim
+            tlsn = tlsn.permute(1, 0, 2) # seq_len, bs, enc_dim
+            apb = apb.permute(1, 0, 2) # 1, bs, enc_dim
+            lsnemb = lsnemb.permute(1, 0, 2) # 1, bs, enc_dim
+
+
+
             # After permuting the tensors but before time embedding
             base_batch_size = sample.shape[1]  # This is our target batch size
 
@@ -249,16 +260,6 @@ class Denoiser(nn.Module):
             apb = adjust_batch(apb, base_batch_size)
             lsnemb = adjust_batch(lsnemb, base_batch_size)
 
-
-
-            # breakpoint()
-            spk_emb = spk_emb.permute(1, 0, 2) # lat1, bs, lat0
-            # aspk = aspk.permute(1, 0, 2) # seq_len, bs, enc_dim
-            # tspk = tspk.permute(1, 0, 2) # seq_len, bs, enc_dim
-            alsn = alsn.permute(1, 0, 2) # seq_len, bs, enc_dim
-            tlsn = tlsn.permute(1, 0, 2) # seq_len, bs, enc_dim
-            apb = apb.permute(1, 0, 2) # 1, bs, enc_dim
-            lsnemb = lsnemb.permute(1, 0, 2) # 1, bs, enc_dim
 
             # # text_emb = text_encoded  # [num_words, bs, latent_dim]
             # # textembedding projection
