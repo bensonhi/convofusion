@@ -467,9 +467,6 @@ class Convofusion(BaseModel):
                             text_only_encoder_hidden_states.append(enc)
 
                     text_only_cond_masks = {k: v.chunk(guidance_bs_mulitplier)[1] if v is not None else v for k, v in cond_masks.items()}
-                    print('?????????????????????')
-                    print(text_only_cond_masks['tlsn'])
-                    print(cond_masks.items())
                     # breakpoint()
                     noise_pred_text, text_only_att_mats = self.denoiser(
                         sample=latents,
@@ -491,11 +488,9 @@ class Convofusion(BaseModel):
                     # text_only_att_mats = [att_mat.chunk(guidance_bs_mulitplier)[1] for att_mat in att_mats]
                     # check the shapes of the attention matrices
                     text_att_mats = text_only_att_mats[2]
-                    print(text_att_mats)
 
                     # aggregate and Get max activation value for each focus token defined by focus indices
                     text_att_mats = weg.aggregate_attentions(text_att_mats)
-                    print(text_att_mats)
                     max_attention_at_indices = weg.get_max_attention_at_indices(text_att_mats, focus_indices, smooth_attentions=True, normalize_eot=True, eot_indices=eot_indices)
                     
                     loss, losses = weg.compute_attention_focus_loss(max_attention_at_indices)
