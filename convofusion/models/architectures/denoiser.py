@@ -271,7 +271,7 @@ class Denoiser(nn.Module):
                 tlsn = time_emb + tlsn
                 # aspk = time_emb + aspk
                 audio_time_emb = self.time_to_audio_proj(time_emb)
-                audio_time_emb=audio_time_emb[:,alsn.shape[1]:]
+                audio_time_emb=audio_time_emb[:,alsn.shape[1]:,:]
                 alsn = audio_time_emb + alsn
                 spk_emb = audio_time_emb + spk_emb
                 apb = time_emb + apb
