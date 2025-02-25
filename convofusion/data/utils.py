@@ -57,6 +57,7 @@ def beatdnd_collate(batch):
         "sem_lsn":
         collate_tensors([torch.tensor(b[16]).float() for b in notnone_batches]),
         "sem_info": [b[17] for b in notnone_batches],
+        "melspec_lsn": collate_tensors([torch.tensor(b[18]).float() for b in notnone_batches])
     }
     return adapted_batch
 
