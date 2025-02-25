@@ -406,7 +406,9 @@ def process_samples(batch, model, cfg, logger, output_dir):
                 for b in range(len(text_tokenwordmap)):
                     indices = []
                     for fword in focus_words[b]:
-                        indices += [i for i, x in enumerate(text_tokenwordmap[b]) if x == fword]
+                        # Make sure we're only adding integer indices
+                        word_indices = [i for i, x in enumerate(text_tokenwordmap[b]) if x == fword and isinstance(i, int)]
+                        indices.extend(word_indices)
                     focus_indices.append(indices)
 
             e_lengths = lengths * (model.clf_guidance_drops+1) if model.do_classifier_free_guidance else lengths

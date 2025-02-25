@@ -45,10 +45,14 @@ def get_max_attention_at_indices(att_mat, batch_idxs, smooth_attentions=False, n
             batch_max_indices_list.append(max_indices_list)
             continue
         for i in batch_idxs[b_i]:
-            motion_chunk = attention_for_text[b_i, :, int(i)-1] # -1 because we removed the bos token
+            # Add type checking to ensure i is an integer
+            if not isinstance(i, int):
+                print(f"Warning: Found non-integer index '{i}' in focus_indices. Skipping.")
+                continue
+                
+            motion_chunk = attention_for_text[b_i, :, i-1]  # -1 because we removed the bos token
             
-            #
-            max_indices_list.append(motion_chunk.max(dim=-1)[0]) # choose only max values and discard argmax
+            max_indices_list.append(motion_chunk.max(dim=-1)[0])  # choose only max values and discard argmax
         batch_max_indices_list.append(max_indices_list)
     return batch_max_indices_list 
 
