@@ -204,6 +204,8 @@ class Denoiser(nn.Module):
         spk_emb, alsn, tlsn, apb, lsnemb = encoder_hidden_states
         
         # Helper function to adjust batch size
+        print('??????????????')
+        print(base_batch_size)
         def adjust_batch(tensor, target_size):
             if tensor.shape[1] > target_size:
                 # If larger, take first target_size batches
