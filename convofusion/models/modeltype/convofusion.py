@@ -480,6 +480,8 @@ class Convofusion(BaseModel):
                     self.denoiser.zero_grad()
                     # breakpoint()
                     eot_indices = torch.argmax(text_only_cond_masks['tlsn'].int(),  dim=1) - 1
+                    print('????????????????????????')
+                    print(len(eot_indices))
 
                     # text_only_att_mats = [att_mat.chunk(guidance_bs_mulitplier)[1] for att_mat in att_mats]
                     # check the shapes of the attention matrices
