@@ -377,11 +377,11 @@ class Denoiser(nn.Module):
                                                              dtype=torch.bool,
                                                              device=spk_emb.device)
                         elif key == 'alsn':
-                            mem_mask_dict[key] = torch.zeros((0, alsn.shape[0]), 
+                            mem_mask_dict[key] = torch.zeros((sample.shape[1], alsn.shape[0]),
                                                            dtype=torch.bool,
                                                            device=alsn.device)
                         elif key == 'tlsn':
-                            mem_mask_dict[key] = torch.zeros((0, tlsn.shape[0]), 
+                            mem_mask_dict[key] = torch.zeros((sample.shape[1], tlsn.shape[0]),
                                                            dtype=torch.bool,
                                                            device=tlsn.device)
             
