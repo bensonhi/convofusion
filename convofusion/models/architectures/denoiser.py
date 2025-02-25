@@ -390,12 +390,15 @@ class Denoiser(nn.Module):
             # mspk = self.mem_mpsk_pos(mspk)
             # breakpoint()
             # Adjust masks to correct dimensions
+            print('??????????????')
             if mem_mask_dict:
                 for key in mem_mask_dict:
+                    print(key)
+                    print(mem_mask_dict[key].shape)
                     if mem_mask_dict[key] is not None:
                         # Keep the sequence length dimension intact
                         if key == 'alsn':
-                            mem_mask_dict[key] = mem_mask_dict[key][:, :alsn.shape[0]]
+                            mem_mask_dict[key] = mem_mask_dict[key][:sample.shape[1] // self.clf_guidance_drops, :alsn.shape[0]]
                         elif key == 'tlsn':
                             mem_mask_dict[key] = mem_mask_dict[key][:, :tlsn.shape[0]]
                         elif key == 'spkemb':
