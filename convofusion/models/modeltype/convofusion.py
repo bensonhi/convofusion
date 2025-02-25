@@ -469,6 +469,9 @@ class Convofusion(BaseModel):
                             text_only_encoder_hidden_states.append(enc)
 
                     text_only_cond_masks = {k: v.chunk(guidance_bs_mulitplier)[1] if v is not None else v for k, v in cond_masks.items()}
+                    print('?????????????????????')
+                    print(text_only_cond_masks['tlsn'])
+                    print(cond_masks.items())
                     # breakpoint()
                     noise_pred_text, text_only_att_mats = self.denoiser(
                         sample=latents,
@@ -480,8 +483,6 @@ class Convofusion(BaseModel):
                     self.denoiser.zero_grad()
                     # breakpoint()
                     eot_indices = torch.argmax(text_only_cond_masks['tlsn'].int(),  dim=1) - 1
-                    print('????????????????????????')
-                    print(len(eot_indices))
 
                     # text_only_att_mats = [att_mat.chunk(guidance_bs_mulitplier)[1] for att_mat in att_mats]
                     # check the shapes of the attention matrices
