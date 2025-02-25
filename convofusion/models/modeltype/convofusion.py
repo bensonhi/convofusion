@@ -454,7 +454,20 @@ class Convofusion(BaseModel):
                     # 
                     latents = latents.clone().detach().requires_grad_(True)
 
-                    text_only_encoder_hidden_states = [ enc.chunk(guidance_bs_mulitplier)[1] for enc in encoder_hidden_states]
+                    # Add error checking before chunking
+                    text_only_encoder_hidden_states = []
+                    for enc in encoder_hidden_states:
+                        if isinstance(enc, torch.Tensor):
+                            chunks = enc.chunk(guidance_bs_mulitplier)
+                            if len(chunks) > 1:
+                                text_only_encoder_hidden_states.append(chunks[1])
+                            else:
+                                # Handle case where tensor can't be chunked enough times
+                                text_only_encoder_hidden_states.append(enc)
+                        else:
+                            # Handle non-tensor elements
+                            text_only_encoder_hidden_states.append(enc)
+
                     text_only_cond_masks = {k: v.chunk(guidance_bs_mulitplier)[1] if v is not None else v for k, v in cond_masks.items()}
                     # breakpoint()
                     noise_pred_text, text_only_att_mats = self.denoiser(
