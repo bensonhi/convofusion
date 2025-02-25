@@ -391,10 +391,9 @@ class Denoiser(nn.Module):
             # breakpoint()
             # Adjust masks to correct dimensions
             print('??????????????')
+            print(mem_mask_dict)
             if mem_mask_dict:
                 for key in mem_mask_dict:
-                    print(key)
-                    print(mem_mask_dict[key].shape)
                     if mem_mask_dict[key] is not None:
                         # Keep the sequence length dimension intact
                         if key == 'alsn':
