@@ -58,6 +58,7 @@ def collate_fn(batch):
         "spk_name": [b[11] for b in notnone_batches],
         "lsn_name": [b[12] for b in notnone_batches],
         "lsn_id": [b[13] for b in notnone_batches],
+        "melspec_lsn": [b[20] for b in notnone_batches],
     }
     return adapted_batch
 
@@ -771,7 +772,8 @@ class BEATAugReactionDataset(data.Dataset):
             seg_lsn,
             seg_spk,
             sem_lsn,
-            sem_info
+            sem_info,
+            melspec_lsn
         )
 
 
