@@ -1191,7 +1191,6 @@ class Convofusion(BaseModel):
                 spk_name = batch["spk_name"]
                 lsn_name = batch["lsn_name"]
                 name = batch["name"]
-                melspec_lsn = batch["melspec_lsn"]
                 other_mlsn = batch["other_mlsn"]
                 full_comb_audio = batch["combined_audio"]
                 semantic = batch["sem_lsn"]
