@@ -241,9 +241,14 @@ class BaseModel(LightningModule):
                     if self.stage != 'vae':
                         # breakpoint()
                         if isinstance(att_maps, dict):
-
-                            lsn_wordmap = ",".join(token2word_map['lsn'][0])
-                            spk_wordmap = ",".join(token2word_map['spk'][0])
+                            # Convert tensors to strings if needed
+                            def convert_to_str(item):
+                                if isinstance(item, torch.Tensor):
+                                    return str(item.item() if item.numel() == 1 else item.tolist())
+                                return str(item)
+                                
+                            lsn_wordmap = ",".join([convert_to_str(item) for item in token2word_map['lsn'][0]])
+                            spk_wordmap = ",".join([convert_to_str(item) for item in token2word_map['spk'][0]])
                             with open(os.path.join(sample_dir, 'lsn_wordmap.txt'), 'w') as f:
                                 f.write(lsn_wordmap)
                             with open(os.path.join(sample_dir, 'spk_wordmap.txt'), 'w') as f:
