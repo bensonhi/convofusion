@@ -379,9 +379,19 @@ class Denoiser(nn.Module):
                             else:
                                 mem_mask_dict[key] = mem_mask_dict[key][:, :spk_emb.shape[0]]
                         elif key == 'alsn':
-                            mem_mask_dict[key] = mem_mask_dict[key][:, :alsn.shape[0]]
+                            if alsn.shape[0] == 1:
+                                mem_mask_dict[key] = torch.zeros((0, alsn.shape[0]), 
+                                                               dtype=torch.bool,
+                                                               device=alsn.device)
+                            else:
+                                mem_mask_dict[key] = mem_mask_dict[key][:, :alsn.shape[0]]
                         elif key == 'tlsn':
-                            mem_mask_dict[key] = mem_mask_dict[key][:, :tlsn.shape[0]]
+                            if tlsn.shape[0] == 1:
+                                mem_mask_dict[key] = torch.zeros((0, tlsn.shape[0]), 
+                                                               dtype=torch.bool,
+                                                               device=tlsn.device)
+                            else:
+                                mem_mask_dict[key] = mem_mask_dict[key][:, :tlsn.shape[0]]
             
             sample, att_mats = self.decoder(tgt=sample, 
                                             memory=[spk_emb, alsn, tlsn, apb, lsnemb], 
