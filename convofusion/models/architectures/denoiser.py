@@ -370,13 +370,18 @@ class Denoiser(nn.Module):
             if mem_mask_dict:
                 for key in mem_mask_dict:
                     if mem_mask_dict[key] is not None:
-                        # Keep the sequence length dimension intact
-                        if key == 'alsn':
+                        if key == 'spkemb':
+                            # If spkemb has no sequence dimension, create empty mask
+                            if spk_emb.shape[0] == 1:  # single token
+                                mem_mask_dict[key] = torch.zeros((spk_emb.shape[1], 0), 
+                                                               dtype=torch.bool,
+                                                               device=spk_emb.device)
+                            else:
+                                mem_mask_dict[key] = mem_mask_dict[key][:, :spk_emb.shape[0]]
+                        elif key == 'alsn':
                             mem_mask_dict[key] = mem_mask_dict[key][:, :alsn.shape[0]]
                         elif key == 'tlsn':
                             mem_mask_dict[key] = mem_mask_dict[key][:, :tlsn.shape[0]]
-                        elif key == 'spkemb':
-                            mem_mask_dict[key] = mem_mask_dict[key][:, :spk_emb.shape[0]]
             
             sample, att_mats = self.decoder(tgt=sample, 
                                             memory=[spk_emb, alsn, tlsn, apb, lsnemb], 
