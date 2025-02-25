@@ -238,29 +238,6 @@ class Denoiser(nn.Module):
 
 
 
-            # After permuting the tensors but before time embedding
-            base_batch_size = sample.shape[1]  # This is our target batch size
-
-            # Helper function to adjust batch size
-            def adjust_batch(tensor, target_size):
-                if tensor.shape[1] > target_size:
-                    # If larger, take first target_size batches
-                    return tensor[:, :target_size, :]
-                elif tensor.shape[1] < target_size:
-                    # If smaller, repeat to match size
-                    repeats = target_size // tensor.shape[1] + 1
-                    tensor = tensor.repeat(1, repeats, 1)
-                    return tensor[:, :target_size, :]
-                return tensor
-
-            # Adjust all tensors to match base_batch_size
-            spk_emb = adjust_batch(spk_emb, base_batch_size)
-            alsn = adjust_batch(alsn, base_batch_size)
-            tlsn = adjust_batch(tlsn, base_batch_size)
-            apb = adjust_batch(apb, base_batch_size)
-            lsnemb = adjust_batch(lsnemb, base_batch_size)
-
-
             # # text_emb = text_encoded  # [num_words, bs, latent_dim]
             # # textembedding projection
             # if self.text_encoded_dim != self.latent_dim:
@@ -390,17 +367,16 @@ class Denoiser(nn.Module):
             # mspk = self.mem_mpsk_pos(mspk)
             # breakpoint()
             # Adjust masks to correct dimensions
-            base_batch_size = sample.shape[1]
             if mem_mask_dict:
                 for key in mem_mask_dict:
                     if mem_mask_dict[key] is not None:
                         # Keep the sequence length dimension intact
                         if key == 'alsn':
-                            mem_mask_dict[key] = mem_mask_dict[key][:base_batch_size :alsn.shape[0]]
+                            mem_mask_dict[key] = mem_mask_dict[key][:, :alsn.shape[0]]
                         elif key == 'tlsn':
-                            mem_mask_dict[key] = mem_mask_dict[key][:base_batch_size, :tlsn.shape[0]]
+                            mem_mask_dict[key] = mem_mask_dict[key][:, :tlsn.shape[0]]
                         elif key == 'spkemb':
-                            mem_mask_dict[key] = mem_mask_dict[key][:base_batch_size, :spk_emb.shape[0]]
+                            mem_mask_dict[key] = mem_mask_dict[key][:, :spk_emb.shape[0]]
             
             sample, att_mats = self.decoder(tgt=sample, 
                                             memory=[spk_emb, alsn, tlsn, apb, lsnemb], 
