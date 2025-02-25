@@ -197,35 +197,6 @@ class Denoiser(nn.Module):
         if lengths not in [None, []]:
             mask = lengths_to_mask(lengths, sample.device)
 
-        # After permuting the tensors but before time embedding
-        base_batch_size = sample.shape[1]  # This is our target batch size
-        
-        # Normalize batch sizes
-        spk_emb, alsn, tlsn, apb, lsnemb = encoder_hidden_states
-        
-        # Helper function to adjust batch size
-        print('??????????????')
-        print(base_batch_size)
-        def adjust_batch(tensor, target_size):
-            if tensor.shape[1] > target_size:
-                # If larger, take first target_size batches
-                return tensor[:, :target_size, :]
-            elif tensor.shape[1] < target_size:
-                # If smaller, repeat to match size
-                repeats = target_size // tensor.shape[1] + 1
-                tensor = tensor.repeat(1, repeats, 1)
-                return tensor[:, :target_size, :]
-            return tensor
-        
-        # Adjust all tensors to match base_batch_size
-        spk_emb = adjust_batch(spk_emb, base_batch_size)
-        alsn = adjust_batch(alsn, base_batch_size)
-        tlsn = adjust_batch(tlsn, base_batch_size)
-        apb = adjust_batch(apb, base_batch_size)
-        lsnemb = adjust_batch(lsnemb, base_batch_size)
-        
-        encoder_hidden_states = [spk_emb, alsn, tlsn, apb, lsnemb]
-
         # 1. time_embedding
         # broadcast to batch dimension in a way that's compatible with ONNX/Core ML
         timesteps = timestep.expand(sample.shape[1]).clone()
@@ -255,6 +226,31 @@ class Denoiser(nn.Module):
             # text_emb [seq_len, batch_size, text_encoded_dim] <= [batch_size, seq_len, text_encoded_dim]
             # spk_emb, aspk, tspk, alsn, tlsn, apb, lsnemb = encoder_hidden_states
             spk_emb, alsn, tlsn, apb, lsnemb = encoder_hidden_states
+
+            # After permuting the tensors but before time embedding
+            base_batch_size = sample.shape[1]  # This is our target batch size
+
+            # Helper function to adjust batch size
+            def adjust_batch(tensor, target_size):
+                if tensor.shape[1] > target_size:
+                    # If larger, take first target_size batches
+                    return tensor[:, :target_size, :]
+                elif tensor.shape[1] < target_size:
+                    # If smaller, repeat to match size
+                    repeats = target_size // tensor.shape[1] + 1
+                    tensor = tensor.repeat(1, repeats, 1)
+                    return tensor[:, :target_size, :]
+                return tensor
+
+            # Adjust all tensors to match base_batch_size
+            spk_emb = adjust_batch(spk_emb, base_batch_size)
+            alsn = adjust_batch(alsn, base_batch_size)
+            tlsn = adjust_batch(tlsn, base_batch_size)
+            apb = adjust_batch(apb, base_batch_size)
+            lsnemb = adjust_batch(lsnemb, base_batch_size)
+
+
+
             # breakpoint()
             spk_emb = spk_emb.permute(1, 0, 2) # lat1, bs, lat0
             # aspk = aspk.permute(1, 0, 2) # seq_len, bs, enc_dim
