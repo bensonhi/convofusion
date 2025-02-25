@@ -187,7 +187,9 @@ class Denoiser(nn.Module):
         # 0.  dimension matching
         # sample [latent_dim[0], batch_size, latent_dim] <= [batch_size, latent_dim[0], latent_dim[1]]
         # breakpoint()
-        sample = sample.permute(1, 0, 2) # ntokens(8*2), bs, dim 
+        sample = sample.permute(1, 0, 2) # ntokens(8*2), bs, dim
+        print('?????????s')
+        print(sample.shape)
 
         # breakpoint()
         if not self.diffusion_only:
@@ -371,7 +373,7 @@ class Denoiser(nn.Module):
                 for key in mem_mask_dict:
                     if mem_mask_dict[key] is not None:
                         if key == 'spkemb':
-                            mem_mask_dict[key] = torch.zeros((spk_emb.shape[1], 1),
+                            mem_mask_dict[key] = torch.zeros((0, spk_emb.shape[1]),
                                                              dtype=torch.bool,
                                                              device=spk_emb.device)
                         elif key == 'alsn':
