@@ -956,6 +956,17 @@ class Convofusion(BaseModel):
             aspk = audio_emb_spk
             alsn = audio_emb_lsn
 
+            text_tokenwordmap = token2word_map_lsn[bs:bs * 2]
+            if len(focus_words) == 0 or len(focus_words[0]) == 0:  # no focus words
+                focus_indices = []
+            else:
+                focus_indices = []
+                for b in range(len(text_tokenwordmap)):
+                    indices = []
+                    for fword in focus_words[b]:
+                        indices += [i for i, x in enumerate(text_tokenwordmap[b]) if x == fword]
+                    focus_indices.append(indices)
+
             cond_emb = self.condition_fuser(aspk, alsn, tlsn, active_passive_bit, lsn_id)
         elif self.condition == 'textaudio_uncond':
             # REACT CHANGE
@@ -1005,19 +1016,6 @@ class Convofusion(BaseModel):
 
         # diffusion reverse
         with torch.no_grad():
-            # Convert focus_words to focus_indices before passing to _diffusion_reverse
-            focus_indices = []
-            for b in range(bs):
-                indices = []
-                if b < len(focus_words) and focus_words[b]:
-                    for word in focus_words[b]:
-                        # Find all occurrences of the word in the token map
-                        for i, token_word in enumerate(token2word_map_lsn[b]):
-                            if isinstance(token_word, str) and token_word == word:
-                                indices.append(i)
-                focus_indices.append(indices)
-
-            # Now pass focus_indices instead of focus_words
             z, att_mats = self._diffusion_reverse(cond_emb, lengths, cond_masks={'alsn': al_mask, 'tlsn': tl_mask, 'spkemb':ts_mask}, focus_indices=focus_indices)
         # breakpoint()
         with torch.no_grad():
@@ -1040,10 +1038,9 @@ class Convofusion(BaseModel):
             # [bs, ntoken, nfeats]<= [ntoken, bs, nfeats]
             "lat_t": z.permute(1, 2, 0, 3), #-> bs, t, bh, dim
             "test_attention_maps": att_mats,
-            "token2word_map_lsn": alsn,
-            "token2word_map_spk": aspk,
-            "focus_words": focus_words,
-            "token2word_map": {"lsn": token2word_map_lsn, "spk": token2word_map_spk}
+            "token2word_map_lsn": token2word_map_lsn,
+            "token2word_map_spk": token2word_map_spk,
+            "focus_words": focus_words
         }
 
         # 
