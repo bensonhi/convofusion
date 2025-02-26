@@ -951,14 +951,11 @@ class Convofusion(BaseModel):
 
             # breakpoint()
             # aspk, tspk, as_mask, ts_mask, token2word_map_spk, ta_spk = self.text_audio_encoder(text_spk, melspec_spk, person_type='spk-ta')
-            _, tspk, as_mask, ts_mask, token2word_map_spk, _ = self.text_audio_encoder(text_spk, None,person_type='spk',return_textmap=False)
-            _, tlsn, al_mask, tl_mask, token2word_map_lsn, _ = self.text_audio_encoder(text_lsn, None,person_type='lsn',return_textmap=False)
+            _, tspk, as_mask, ts_mask, token2word_map_spk, _ = self.text_audio_encoder(text_spk, None,person_type='spk',return_textmap=True)
+            _, tlsn, al_mask, tl_mask, token2word_map_lsn, _ = self.text_audio_encoder(text_lsn, None,person_type='lsn',return_textmap=True)
             aspk = audio_emb_spk
             alsn = audio_emb_lsn
 
-            print('???????')
-            print(token2word_map_spk)
-            print(token2word_map_lsn)
 
             text_tokenwordmap = token2word_map_lsn[bs:bs * 2]
             if len(focus_words) == 0 or len(focus_words[0]) == 0:  # no focus words
