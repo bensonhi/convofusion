@@ -956,6 +956,10 @@ class Convofusion(BaseModel):
             aspk = audio_emb_spk
             alsn = audio_emb_lsn
 
+            print('???????')
+            print(token2word_map_spk)
+            print(token2word_map_lsn)
+
             text_tokenwordmap = token2word_map_lsn[bs:bs * 2]
             if len(focus_words) == 0 or len(focus_words[0]) == 0:  # no focus words
                 focus_indices = []
