@@ -48,7 +48,7 @@ class T5TextEncoder(nn.Module):
         self.projection = nn.Sequential(nn.ReLU(),
                                         nn.Linear(encoded_dim, self.latent_dim))
 
-    def forward(self, texts: List[str], return_map: bool = False):
+    def forward(self, texts: List[str], return_map: bool = True):
         # breakpoint()
         text_encoded, mask, token2word_map = self.get_last_hidden_state(texts,
                                                         return_map=return_map)
